@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "@/router";
-import { getBookContent, getBookChapters, type BookChapter, type GetBookContentReturn } from "@/api/lengku8";
+import { getBookContent, getBookChapters, type BookChapter, type GetBookContentResult } from "@/api/lengku8";
 import BookItem from "./components/BookItem.vue";
 import SettingBtn from "./components/SettingBtn.vue";
 import type { Chapter } from "@/components/CatalogPanel.vue";
@@ -46,7 +46,7 @@ const bookReadSetting = useBookReadSetting();
 
 const bookReadRef = useTemplateRef("bookReadRef");
 
-const list = ref<GetBookContentReturn[]>([]); // 列表数据
+const list = ref<GetBookContentResult[]>([]); // 列表数据
 const loading = ref(false); // 加载中
 const onMore = ref(false); // 没有更多数据
 const chapters = ref<BookChapter[]>([]); // 章节数据
@@ -74,7 +74,7 @@ const getList = async (chapterId: string) => {
   try {
     loading.value = true;
     const res = await getBookContent({
-      id: route.query.id,
+      id: route.query.id as string,
       chapterId
     });
     list.value.push(res);
@@ -87,7 +87,7 @@ const getList = async (chapterId: string) => {
  * @description: 获取章节数据
  */
 const getChapterData = async () => {
-  chapters.value = await getBookChapters({ id: route.query.id });
+  chapters.value = await getBookChapters({ id: route.query.id as string });
 };
 
 /**

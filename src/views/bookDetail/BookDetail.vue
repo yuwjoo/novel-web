@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { getBookChapters, getBookDetail, type BookChapter } from "@/api/lengku8";
+import { getBookChapters, getBookDetail, GetBookDetailResult, type BookChapter } from "@/api/lengku8";
 import type { Chapter } from "@/components/CatalogPanel.vue";
 import { useRoute, useRouter } from "@/router";
 
@@ -51,7 +51,7 @@ const router = useRouter();
 
 const loading = ref(false); // 加载中
 
-const bookInfo = ref<ReturnType<typeof getBookDetail>>({}); // 小说信息
+const bookInfo = ref<GetBookDetailResult | Record<string, any>>({}); // 小说信息
 const chapters = ref<BookChapter[]>([]); // 章节数据
 
 const bgImgStyle = computed(() => ({
@@ -72,8 +72,8 @@ const getData = async () => {
   loading.value = true;
   try {
     const [detailRes, chapterRes] = await Promise.all([
-      getBookDetail({ id: route.query.id }),
-      getBookChapters({ id: route.query.id })
+      getBookDetail({ id: route.query.id as string }),
+      getBookChapters({ id: route.query.id as string })
     ]);
     bookInfo.value = detailRes;
     chapters.value = chapterRes;

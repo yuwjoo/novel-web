@@ -68,7 +68,7 @@ const listCurrentPage = ref(1); // 当前列表展示页
 
 const searchDropdownItemRef = useTemplateRef("searchDropdownItemRef"); // 筛选下拉框
 
-const bookClassifyList = ref<DropdownItemOption[]>([]); // 分类列表
+const bookClassifyList = ref<DropdownItemOption[]>([{ text: "全部", value: "0" }]); // 分类列表
 
 /**
  * @description: 获取分类列表

@@ -1,126 +1,176 @@
 import { useFly } from "@/hooks/fly";
-import _$ from "jquery";
+import { parseHTML } from "@/utils/html";
 
 export interface BookChapter {
-  id: string;
-  title: string;
+  id: string; // 章节id
+  title: string; // 章节标题
 }
 
 export interface BookClassify {
-  id: string;
-  title: string;
+  id: string; // 分类id
+  title: string; // 分类标题
 }
 
-export interface GetBookContentReturn {
-  chapterId: string;
-  title: string;
-  contents: string[];
-  preChapterId?: string;
-  nextChapterId?: string;
+export interface SearchBookItem {
+  id: string; // id
+  classify: string; // 分类
+  title: string; // 标题
+  author: string; // 作者
+  authorId: string; // 作者id
+}
+
+export interface GetBookListParams {
+  current: number; // 当前页
+  classify: string; // 分类
+}
+
+export interface GetBookListResult {
+  data: {
+    id: string; // id
+    bookInfo: {
+      title: string; // 标题
+      author: string; // 作者
+      describe: string; // 简介
+      updateDate: string; // 更新时间
+    };
+  }[];
+  total: number; // 总条数
+  current: number; // 当前页
+  size: number; // 每页条数
+}
+
+export interface GetBookDetailParams {
+  id: string; // id
+}
+
+export interface GetBookDetailResult {
+  id: string; // id
+  title: string; // 标题
+  author: string; // 作者
+  authorId: string; // 作者id
+  categorys: string[]; // 分类集合
+  updateData: string; // 更新日期
+  cover: string; // 封面
+  intro: string; // 简介
+  lastChapter: string; // 最新章节
+}
+
+export interface GetBookChaptersParams {
+  id: string; // id
+}
+
+export type GetBookChaptersResult = BookChapter[];
+
+export interface GetBookContentParams {
+  id: string; // id
+  chapterId: string; // 章节id
+}
+
+export interface GetBookContentResult {
+  chapterId: string; // 章节id
+  title: string; // 标题
+  contents: string[]; // 段落集合
+  preChapterId?: string; // 上一章id
+  nextChapterId?: string; // 下一章id
+}
+
+export type GetBookClassifyResult = BookClassify[];
+
+export interface SearchBookParams {
+  searchValue: string; // 模糊搜索值
+  current: number; // 当前页
 }
 
 export interface SearchBookResult {
-  id: string;
-  classify: string;
-  title: string;
-  author: string;
-  authorId: string;
+  list: SearchBookItem[]; // 小说列表
+  currentPage: number; // 当前页
+  totalPage: number; // 总页数
 }
 
 /**
  * @description: 获取小说列表
- * @param {*} current 当前页
- * @param {*} classify 分类
- * @return {*}
+ * @param {GetBookListParams} params 请求参数
+ * @return {Promise<GetBookListResult>} 请求结果
  */
-export function getBookList({ current, classify }) {
-  return useFly()
-    .get(`https://www3.lengku8.cc/category/${classify}/${current}.html`)
-    .then((res) => {
-      const jquery = _$(_$.parseHTML(res.data));
-      const $ = (selector) => jquery.find(selector);
-      const list = $(".CGsectionTwo-right-content")
-        .children()
-        .map((_i, el) => {
-          return {
-            id: $(el)
-              .find(".title")
-              .attr("href")!
-              .match(/\/book\/(\d+)\//)![1],
-            bookInfo: {
-              title: $(el).find(".title").text(),
-              author: $(el).find("a.b").text(),
-              describe: $(el).children("p").eq(2).text(),
-              updateDate: ($(el)
-                .children("p")
-                .eq(3)
-                .text()
-                .match(/[\d-]+/) || [])[0]
-            }
-          };
-        })
-        .toArray();
-      const current = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text() || 0);
-      const size = Number($(".CGsectionTwo-right-bottom-detail span").eq(2).text() || 0);
-      const total = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text() || 0) * size;
+export async function getBookList(params: GetBookListParams): Promise<GetBookListResult> {
+  const res = await useFly().get(`https://www3.lengku8.cc/category/${params.classify}/${params.current}.html`);
+  const $ = parseHTML(res.data);
 
-      return { data: list, total, current, size };
-    });
+  const list = $(".CGsectionTwo-right-content")
+    .children()
+    .map((_i, el) => {
+      const id =
+        $(el)
+          .find(".title")
+          .attr("href")
+          ?.match(/\/book\/(\d+)\//)?.[1] || "";
+      const title = $(el).find(".title").text();
+      const author = $(el).find("a.b").text();
+      const describe = $(el).children("p").eq(2).text();
+      const updateDate =
+        $(el)
+          .children("p")
+          .eq(3)
+          .text()
+          .match(/[\d-]+/)?.[0] || "";
+      return {
+        id,
+        bookInfo: {
+          title,
+          author,
+          describe,
+          updateDate
+        }
+      };
+    })
+    .toArray();
+  const current = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text() || 0);
+  const size = Number($(".CGsectionTwo-right-bottom-detail span").eq(2).text() || 0);
+  const total = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text() || 0) * size;
+
+  return { data: list, total, current, size };
 }
 
 /**
  * @description: 获取小说详情
- * @param {*} id 小说id
- * @return {*}
+ * @param {GetBookDetailParams} params 请求参数
+ * @return {Promise<GetBookDetailResult>} 请求结果
  */
-export function getBookDetail({ id }) {
-  return useFly()
-    .get(`https://www3.lengku8.cc/book/${id}/`)
-    .then((res) => {
-      const jquery = _$(_$.parseHTML(res.data));
-      const $ = (selector) => jquery.find(selector);
-      const title = $(".BGsectionOne-top-right .title").eq(0).text(); // 标题
-      const author = $(".BGsectionOne-top-right .author .b").eq(0).text(); // 作者
-      const authorId = $(".BGsectionOne-top-right .author .b")
-        .eq(0)
-        .attr("href")!
-        .match(/\/writer\/(\d+)\//)![1]; // 作者id
-      const categorys = $(".BGsectionOne-top-right .category")
-        .eq(0)
-        .children("span")
-        .map((i, el) => $(el).text())
-        .toArray(); // 类别
-      const updateData = $(".BGsectionOne-top-right .time").eq(0).children("span").text(); // 更新时间
-      const cover = $(".BGsectionOne-top-left .lazyload").attr("_src"); // 封面
-      const intro = $(".BGsectionTwo-bottom").text(); // 简介
-      const lastChapter = $(".BGsectionOne-top-right .newestChapter .r").text(); // 最新章节
-      return {
-        id,
-        title,
-        author,
-        authorId,
-        categorys,
-        updateData,
-        cover,
-        intro,
-        lastChapter
-      };
-    });
+export async function getBookDetail(params: GetBookDetailParams): Promise<GetBookDetailResult> {
+  const res = await useFly().get(`https://www3.lengku8.cc/book/${params.id}/`);
+  const $ = parseHTML(res.data);
+
+  const title = $(".BGsectionOne-top-right .title").eq(0).text(); // 标题
+  const author = $(".BGsectionOne-top-right .author .b").eq(0).text(); // 作者
+  const authorId = $(".BGsectionOne-top-right .author .b")
+    .eq(0)
+    .attr("href")!
+    .match(/\/writer\/(\d+)\//)![1]; // 作者id
+  const categorys = $(".BGsectionOne-top-right .category")
+    .eq(0)
+    .children("span")
+    .map((i, el) => $(el).text())
+    .toArray(); // 类别
+  const updateData = $(".BGsectionOne-top-right .time").eq(0).children("span").text(); // 更新时间
+  const cover = $(".BGsectionOne-top-left .lazyload").attr("_src") || ""; // 封面
+  const intro = $(".BGsectionTwo-bottom").text(); // 简介
+  const lastChapter = $(".BGsectionOne-top-right .newestChapter .r").text(); // 最新章节
+
+  return { id: params.id, title, author, authorId, categorys, updateData, cover, intro, lastChapter };
 }
 
 /**
  * @description: 获取小说目录
- * @param {*} id 小说id
- * @return {*}
+ * @param {GetBookChaptersParams} params 请求参数
+ * @return {Promise<GetBookChaptersResult>} 请求结果
  */
-export async function getBookChapters({ id }) {
+export async function getBookChapters(params: GetBookChaptersParams): Promise<GetBookChaptersResult> {
   const list: BookChapter[] = [];
   let currentPage = 1;
   let totalPage = 0;
   do {
-    const res = await useFly().get(`https://www3.lengku8.cc/book/${id}/catalog/${currentPage}.html`);
-    const jquery = _$(_$.parseHTML(res.data));
-    const $ = (selector) => jquery.find(selector);
+    const res = await useFly().get(`https://www3.lengku8.cc/book/${params.id}/catalog/${currentPage}.html`);
+    const $ = parseHTML(res.data);
 
     const originalOrderArrStr = res.data.match(/var originalOrder = \[(.+)\];/)?.[1]; // 章节排序映射规则数组字符串
     const tempList: BookChapter[] = [];
@@ -154,7 +204,6 @@ export async function getBookChapters({ id }) {
     }
 
     list.push(...tempList);
-
     totalPage = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text() || 0);
     currentPage++;
   } while (currentPage <= totalPage);
@@ -164,14 +213,13 @@ export async function getBookChapters({ id }) {
 
 /**
  * @description: 获取小说内容
- * @param {*} id 小说id
- * @param {*} chapterId 目录id
- * @return {*}
+ * @param {GetBookContentParams} params 请求参数
+ * @return {Promise<GetBookContentResult>} 请求结果
  */
-export async function getBookContent({ id, chapterId }): Promise<GetBookContentReturn> {
-  const res = await useFly().get(`https://www3.lengku8.cc/book/${id}/${chapterId}.html`);
-  const jquery = _$(_$.parseHTML(res.data));
-  const $ = (selector) => jquery.find(selector);
+export async function getBookContent(params: GetBookContentParams): Promise<GetBookContentResult> {
+  const res = await useFly().get(`https://www3.lengku8.cc/book/${params.id}/${params.chapterId}.html`);
+  const $ = parseHTML(res.data);
+
   const contents: string[] = [];
   let isEnd = false;
   $(".RBGsectionThree-content p").each((i, el) => {
@@ -187,17 +235,18 @@ export async function getBookContent({ id, chapterId }): Promise<GetBookContentR
     .eq(0)
     .attr("href")!
     .match(/(\d+)\.html/) || [])![1]; // 下一章id
-  return { chapterId, title, contents, preChapterId, nextChapterId };
+
+  return { chapterId: params.chapterId, title, contents, preChapterId, nextChapterId };
 }
 
 /**
  * @description: 获取小说分类
- * @return {*}
+ * @return {Promise<GetBookClassifyResult>} 请求结果
  */
-export async function getBookClassify() {
+export async function getBookClassify(): Promise<GetBookClassifyResult> {
   const res = await useFly().get(`https://www3.lengku8.cc/category/`);
-  const jquery = _$(_$.parseHTML(res.data));
-  const $ = (selector) => jquery.find(selector);
+  const $ = parseHTML(res.data);
+
   const list: BookClassify[] = [];
   $(".CGsectionTwo-left a").each((i, el) => {
     if (!$(el).text()) return;
@@ -212,15 +261,14 @@ export async function getBookClassify() {
 
 /**
  * @description: 模糊搜索小说
- * @param {*} searchValue 模糊搜索值
- * @param {*} current 当前页
- * @return {*}
+ * @param {SearchBookParams} params 请求参数
+ * @return {Promise<SearchBookResult>} 请求结果
  */
-export async function searchBook({ searchValue, current }) {
-  const res = await useFly().get(`https://www3.lengku8.cc/search/${searchValue}/${current}`);
-  const jquery = _$(_$.parseHTML(res.data));
-  const $ = (selector) => jquery.find(selector);
-  const list: SearchBookResult[] = [];
+export async function searchBook(params: SearchBookParams): Promise<SearchBookResult> {
+  const res = await useFly().get(`https://www3.lengku8.cc/search/${params.searchValue}/${params.current}`);
+  const $ = parseHTML(res.data);
+
+  const list: SearchBookItem[] = [];
   $(".SHsectionThree-middle p").each((i, el) => {
     const span = $(el).children("span");
     list.push({
@@ -231,7 +279,6 @@ export async function searchBook({ searchValue, current }) {
       authorId: span.eq(2).children("a").attr("href")?.match(/\d+/)?.[0] || ""
     });
   });
-
   const currentPage = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text());
   const totalPage = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text());
 
