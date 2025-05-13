@@ -16,8 +16,11 @@ export default defineConfig({
   css: {
     loaderOptions: {
       scss: {
-        additionalData: '@use "@/assets/css/variable.scss" as *;'
+        additionalData: '@use "@/assets/style/variable.scss" as *;'
       }
     }
+  },
+  devServer: {
+    port: 9000
   }
 });

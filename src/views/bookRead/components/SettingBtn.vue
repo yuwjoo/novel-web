@@ -121,7 +121,7 @@ export default {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 3.125rem;
+  height: 50px;
   background: rgba(0, 0, 0, 0.85);
   display: flex;
   color: $font-color-ll;
@@ -133,7 +133,7 @@ export default {
     justify-content: center;
     font-size: $font-size-medium;
     .icon-wrapper {
-      font-size: 0.875rem;
+      font-size: 14px;
     }
     .title {
       font-size: $font-size-small-s;
@@ -147,18 +147,18 @@ export default {
   left: 0;
   z-index: 10;
   width: 100%;
-  height: 2.75rem;
+  height: 44px;
   background: rgba(0, 0, 0, 0.85);
-  font-size: 0.875rem;
-  line-height: 2.75rem;
+  font-size: 14px;
+  line-height: 44px;
   color: #fff;
   .back-content {
-    padding-left: 1rem;
-    width: 3.75rem;
+    padding-left: 16px;
+    width: 60px;
     .icon-arrow {
       display: inline-block;
       transform: rotate(180deg);
-      margin-right: 0.25rem;
+      margin-right: 4px;
     }
   }
 }
@@ -166,12 +166,12 @@ export default {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 3.125rem;
+  bottom: 50px;
   background: rgba(0, 0, 0, 0.85);
 }
 .setting-wrapper .setting-color,
 .setting-wrapper .setting-font {
-  padding: 0.875rem;
+  padding: 14px;
   box-sizing: border-box;
   border-bottom: 1px solid $border-color-dd;
   width: 100%;
@@ -181,10 +181,10 @@ export default {
 .setting-wrapper .setting-color .item,
 .setting-wrapper .setting-font .item {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   text-align: center;
-  line-height: 2rem;
+  line-height: 32px;
   border-radius: 50%;
   box-sizing: border-box;
   background: #ccc;
@@ -202,12 +202,12 @@ export default {
 .setting-wrapper .setting-color .font-btn,
 .setting-wrapper .setting-font .font-btn {
   display: inline-block;
-  width: 9rem;
-  height: 2.4rem;
+  width: 144px;
+  height: 38.4px;
   text-align: center;
-  line-height: 2.4rem;
+  line-height: 38.4px;
   border: 1px solid $border-color-d;
-  border-radius: 1.2rem;
+  border-radius: 19.2px;
   color: $font-color-l;
   font-size: $font-size-large-x;
   box-sizing: border-box;

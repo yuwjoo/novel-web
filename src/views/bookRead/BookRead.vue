@@ -151,14 +151,14 @@ onMounted(() => {
     flex-direction: column;
 
     &-header {
-      height: 2.75rem;
-      line-height: 2.75rem;
+      height: 44px;
+      line-height: 44px;
 
       &-back {
         display: inline-block;
-        width: 2rem;
+        width: 32px;
         height: 100%;
-        font-size: 1.25rem;
+        font-size: 20px;
         text-align: center;
       }
     }

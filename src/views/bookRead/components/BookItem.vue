@@ -26,10 +26,10 @@ export default {
 
 <style lang="scss" scoped>
 .book-item {
-  padding-bottom: 0.625rem;
+  padding-bottom: 10px;
 
   &:last-of-type {
-    padding-bottom: 4.5rem;
+    padding-bottom: 72px;
   }
 
   .book-item__title {

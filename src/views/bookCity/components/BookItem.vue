@@ -46,24 +46,24 @@ export default {
 
 <style lang="scss" scoped>
 .book-item {
-  padding: 1rem 0.625rem;
+  padding: 16px 10px;
   border-bottom: 1px solid $border-color;
   position: relative;
 
   &.book-item--page-first {
-    padding-top: 2.3rem;
+    padding-top: 36.8px;
   }
 
   .book-item-page-divider {
     position: absolute;
-    top: 0.5rem;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     font-size: $font-size-medium-x;
     color: $font-color-ll;
     background: $theme-color;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.3rem;
+    padding: 3.2px 8px;
+    border-radius: 4.8px;
   }
 
   .book-item__title {
@@ -74,22 +74,22 @@ export default {
     &::before {
       content: "";
       float: left;
-      width: 0.3rem;
-      height: 1.2rem;
+      width: 4.8px;
+      height: 19.2px;
       background: $theme-color;
-      margin: 0 0.2rem 0 0;
+      margin: 0 3.2px 0 0;
     }
   }
 
   .book-item__info {
-    margin-top: 0.7rem;
+    margin-top: 11.2px;
     font-size: $font-size-medium;
     display: flex;
     justify-content: space-between;
   }
 
   .book-item__describe {
-    margin-top: 0.7rem;
+    margin-top: 11.2px;
     color: $font-color-d;
   }
 }

@@ -108,8 +108,8 @@ onActivated(() => {
   top: 0;
   z-index: 1;
   width: 100%;
-  height: 2.75rem;
-  line-height: 2.75rem;
+  height: 44px;
+  line-height: 44px;
   color: $background-color;
 
   .book-detail__header-bg {
@@ -125,9 +125,9 @@ onActivated(() => {
   }
   .book-detail__header-back {
     display: inline-block;
-    width: 2rem;
+    width: 32px;
     height: 100%;
-    font-size: 1.25rem;
+    font-size: 20px;
     text-align: center;
   }
 }
@@ -136,7 +136,7 @@ onActivated(() => {
   position: absolute;
   top: 0;
   width: 100%;
-  height: 11.5rem;
+  height: 184px;
   left: 0;
   background-size: cover;
   background-repeat: no-repeat;
@@ -146,18 +146,18 @@ onActivated(() => {
 }
 
 .book-detail__content {
-  padding-top: 2.75rem;
+  padding-top: 44px;
 
   .book-detail__primary {
-    height: 8.75rem;
+    height: 140px;
     box-sizing: border-box;
-    padding: 0.875rem 1rem;
+    padding: 14px 16px;
     display: flex;
 
     .book-detail__cover {
       height: 100%;
-      width: 5.3125rem;
-      margin-right: 1.625rem;
+      width: 85px;
+      margin-right: 26px;
     }
 
     .book-detail__info {
@@ -170,34 +170,34 @@ onActivated(() => {
       .book-detail__info-title {
         font-size: $font-size-medium-x;
         width: 100%;
-        margin-bottom: 0.5rem;
+        margin-bottom: 8px;
         line-height: 1.2;
       }
     }
   }
 
   .book-detail__secondary {
-    padding: 0 1rem;
+    padding: 0 16px;
     background: $background-color;
     margin-bottom: $margin-bottom;
 
     .book-detail__secondary-title {
       font-size: $font-size-medium-x;
       color: $font-color-dd;
-      line-height: 2.5rem;
+      line-height: 40px;
     }
 
     .book-detail__secondary-intro {
       font-size: $font-size-medium;
-      line-height: 1.25rem;
-      margin-bottom: 1.25rem;
+      line-height: 20px;
+      margin-bottom: 20px;
       color: $font-color-d;
     }
 
     .book-detail__secondary-other {
       border-top: 1px solid $border-color;
-      height: 2.5rem;
-      line-height: 2.5rem;
+      height: 40px;
+      line-height: 40px;
       display: flex;
 
       .book-detail__secondary-latest {

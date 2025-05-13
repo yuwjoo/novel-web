@@ -101,11 +101,11 @@ const handleClickChapter = (item: Chapter) => {
   flex-direction: column;
 
   &__header {
-    margin-bottom: 0.875rem;
+    margin-bottom: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 2.5rem;
+    height: 40px;
 
     &-title {
       color: $font-color-dd;
