@@ -1,0 +1,228 @@
+<template>
+  <div class="book-detail">
+    <div class="book-detail__header">
+      <i class="book-detail__header-back icon-back" @click="handleBack"></i>
+      <div class="book-detail__header-bg" :style="bgImgStyle"></div>
+    </div>
+    <div class="book-detail__bg" :style="bgImgStyle"></div>
+
+    <div class="book-detail__content">
+      <div class="book-detail__primary">
+        <img class="book-detail__cover" :src="bookInfo.cover" />
+        <div class="book-detail__info">
+          <h1 class="book-detail__info-title">{{ bookInfo.title }}</h1>
+          <p class="book-detail__info-author">作者：{{ bookInfo.author }}</p>
+          <p class="book-detail__info-category">类别：{{ (bookInfo.categorys || []).join(" | ") }}</p>
+        </div>
+      </div>
+      <div class="book-detail__secondary">
+        <h1 class="book-detail__secondary-title">简介</h1>
+        <p class="book-detail__secondary-intro">{{ bookInfo.intro }}</p>
+        <div class="book-detail__secondary-other">
+          <span class="book-detail__secondary-latest">最新 {{ bookInfo.lastChapter }}</span>
+          <span class="book-detail__secondary-update">{{ bookInfo.updateData }}</span>
+        </div>
+      </div>
+
+      <div class="book-detail__catalog-panel">
+        <CatalogPanel :list="chapters" @change="handleClickChapter" />
+      </div>
+    </div>
+
+    <van-overlay :show="loading">
+      <div class="loading-wrapper">
+        <van-loading size="24px" vertical>加载中...</van-loading>
+      </div>
+    </van-overlay>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { getBookChapters, getBookDetail, type BookChapter } from "@/api/lengku8";
+import type { Chapter } from "@/components/CatalogPanel.vue";
+import { useRoute, useRouter } from "@/router";
+
+defineOptions({
+  name: "book-detail"
+});
+
+const route = useRoute();
+const router = useRouter();
+
+const loading = ref(false); // 加载中
+
+const bookInfo = ref<ReturnType<typeof getBookDetail>>({}); // 小说信息
+const chapters = ref<BookChapter[]>([]); // 章节数据
+
+const bgImgStyle = computed(() => ({
+  backgroundImage: `url(${bookInfo.value.cover})`
+})); // 背景图片样式
+
+/**
+ * @description: 处理后退
+ */
+const handleBack = () => {
+  router.back();
+};
+
+/**
+ * @description: 获取页面数据
+ */
+const getData = async () => {
+  loading.value = true;
+  try {
+    const [detailRes, chapterRes] = await Promise.all([
+      getBookDetail({ id: route.query.id }),
+      getBookChapters({ id: route.query.id })
+    ]);
+    bookInfo.value = detailRes;
+    chapters.value = chapterRes;
+  } finally {
+    loading.value = false;
+  }
+};
+
+/**
+ * @description: 处理点击章节
+ * @param {Chapter} item 章节数据
+ */
+const handleClickChapter = (item: Chapter) => {
+  router.push({
+    name: "bookRead",
+    query: { id: route.query.id, chapterId: item.id }
+  });
+};
+
+getData();
+
+onActivated(() => {
+  if (route.query.id !== bookInfo.value.id) {
+    getData();
+  }
+});
+</script>
+
+<style lang="scss" scoped>
+.book-detail__header {
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 2.75rem;
+  line-height: 2.75rem;
+  color: $background-color;
+
+  .book-detail__header-bg {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: blur(8px) brightness(0.8);
+    transform-origin: top;
+    z-index: -1;
+  }
+  .book-detail__header-back {
+    display: inline-block;
+    width: 2rem;
+    height: 100%;
+    font-size: 1.25rem;
+    text-align: center;
+  }
+}
+
+.book-detail__bg {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 11.5rem;
+  left: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(8px) brightness(0.8);
+  transform-origin: top;
+  z-index: -998;
+}
+
+.book-detail__content {
+  padding-top: 2.75rem;
+
+  .book-detail__primary {
+    height: 8.75rem;
+    box-sizing: border-box;
+    padding: 0.875rem 1rem;
+    display: flex;
+
+    .book-detail__cover {
+      height: 100%;
+      width: 5.3125rem;
+      margin-right: 1.625rem;
+    }
+
+    .book-detail__info {
+      color: $background-color;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-size: $font-size-medium;
+
+      .book-detail__info-title {
+        font-size: $font-size-medium-x;
+        width: 100%;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+      }
+    }
+  }
+
+  .book-detail__secondary {
+    padding: 0 1rem;
+    background: $background-color;
+    margin-bottom: $margin-bottom;
+
+    .book-detail__secondary-title {
+      font-size: $font-size-medium-x;
+      color: $font-color-dd;
+      line-height: 2.5rem;
+    }
+
+    .book-detail__secondary-intro {
+      font-size: $font-size-medium;
+      line-height: 1.25rem;
+      margin-bottom: 1.25rem;
+      color: $font-color-d;
+    }
+
+    .book-detail__secondary-other {
+      border-top: 1px solid $border-color;
+      height: 2.5rem;
+      line-height: 2.5rem;
+      display: flex;
+
+      .book-detail__secondary-latest {
+        flex: 1;
+        font-size: $font-size-medium;
+        color: $font-color-dd;
+      }
+
+      .book-detail__secondary-update {
+        font-size: $font-size-small;
+      }
+    }
+  }
+
+  .book-detail__catalog-panel {
+    padding: 0 16px;
+    height: calc(70vh);
+    background: $font-color-ll;
+  }
+}
+
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+</style>

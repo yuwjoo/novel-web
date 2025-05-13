@@ -1,4 +1,4 @@
-# novel-web1
+# novel-web
 
 ## Project setup
 ```

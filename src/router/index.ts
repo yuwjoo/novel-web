@@ -1,26 +1,30 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-
-const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
-];
+import { routes } from "./routes";
+import { createRouter, createWebHashHistory, type RouteLocationNormalizedLoaded, type Router } from "vue-router";
+import { initInterceptor } from "./interceptor";
 
 const router = createRouter({
-  history: createWebHashHistory(),
-  routes,
+  history: createWebHashHistory(process.env.BASE_URL),
+  routes
 });
 
-export default router;
+/**
+ * @description: router实例hook
+ * @return {Router} router
+ */
+export const useRouter = (): Router => {
+  return router;
+};
+
+/**
+ * @description: route实例hook
+ * @return {RouteLocationNormalizedLoaded} route
+ */
+export const useRoute = (): RouteLocationNormalizedLoaded => {
+  return new Proxy(router.currentRoute, {
+    get(target: Ref<RouteLocationNormalizedLoaded>, key: keyof RouteLocationNormalizedLoaded) {
+      return target.value[key];
+    }
+  }) as unknown as RouteLocationNormalizedLoaded;
+};
+
+initInterceptor(router);

@@ -1,6 +1,17 @@
+import "normalize.css";
+import "@/assets/css/base.scss";
+import App from "@/App.vue";
 import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
+import { useRouter } from "@/router";
+import { createPinia } from "pinia";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import VirtualScroller from "vue-virtual-scroller";
 
-createApp(App).use(store).use(router).mount("#app");
+const app = createApp(App);
+
+app.use(VirtualScroller);
+
+app.use(createPinia());
+app.use(useRouter());
+
+app.mount("#app");
