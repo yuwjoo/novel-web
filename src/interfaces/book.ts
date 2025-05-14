@@ -11,5 +11,6 @@ export interface Book {
   classify: Classify; // 分类
   updateDate: string; // 更新日期
   lastChapter: Chapter; // 最新章节
-  origin: string; // 小说源
+  state: -1 | 0 | 1; // 状态："未知" | "连载" | "完结"
+  bookOrigin: string; // 小说源
 }

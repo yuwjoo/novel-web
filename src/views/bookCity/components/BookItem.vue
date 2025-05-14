@@ -1,46 +1,50 @@
 <template>
-  <div
-    class="book-item"
-    :class="{ 'book-item--page-first': source.bookInfo.page.index === 0 }"
-    @click="handleClickItem(source)"
-  >
-    <div v-if="source.bookInfo.page.index === 0" class="book-item-page-divider">
-      第{{ source.bookInfo.page.current }}/{{ source.bookInfo.page.total / source.bookInfo.page.size }}页
+  <div class="book-item" :class="{ 'book-item--page-first': item.page.index === 0 }" @click="handleClickItem(item)">
+    <div v-if="item.page.index === 0" class="book-item-page-divider">
+      第{{ item.page.current }}/{{ item.page.total / item.page.size }}页
     </div>
-    <div class="book-item__title">{{ source.bookInfo.title }}</div>
+    <div class="book-item__title">{{ item.title }}</div>
     <div class="book-item__info">
-      <div class="book-item__author">作者：{{ source.bookInfo.author }}</div>
-      <div class="book-item__update-date">最近更新：{{ source.bookInfo.updateDate }}</div>
+      <div class="book-item__author">作者：{{ item.author.name }}</div>
+      <div class="book-item__update-date">最近更新：{{ item.updateDate }}</div>
     </div>
-    <div class="book-item__describe">{{ source.bookInfo.describe }}</div>
+    <div class="book-item__describe">{{ item.intro }}</div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "book-item",
-  props: {
-    index: {
-      type: Number
-    },
-    source: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
+<script setup lang="ts">
+import { useRouter } from "@/router";
+import type { PropType } from "vue";
+import { BookListItem } from "../BookCity.vue";
+
+defineOptions({
+  name: "book-item"
+});
+
+defineProps({
+  index: {
+    type: Number,
+    required: true
   },
-  methods: {
-    // 点击书籍跳转到详情页
-    handleClickItem(item) {
-      this.$router.push({
-        name: "bookDetail",
-        query: {
-          id: item.id
-        }
-      });
-    }
+  item: {
+    type: Object as PropType<BookListItem>,
+    required: true
   }
+});
+
+const router = useRouter();
+
+/**
+ * @description: 点击书籍跳转到详情页
+ * @param {BookListItem} item 当前项
+ */
+const handleClickItem = (item: BookListItem) => {
+  router.push({
+    name: "bookDetail",
+    query: {
+      id: item.id
+    }
+  });
 };
 </script>
 

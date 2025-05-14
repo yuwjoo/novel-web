@@ -1,7 +1,7 @@
 <template>
   <div class="book-city">
     <van-dropdown-menu class="book-city__dropdown dropdown-menu">
-      <van-dropdown-item v-model="downMenuForm.classify" :options="bookClassifyList" @change="handleChangeClassify" />
+      <van-dropdown-item v-model="downMenuForm.classifyId" :options="bookClassifyList" @change="handleChangeClassify" />
       <van-dropdown-item
         :title="`第${listCurrentPage}页`"
         ref="searchDropdownItemRef"
@@ -36,7 +36,7 @@
       @current-visible="handleCurrentVisibleChange"
     >
       <template #default="{ item, index }">
-        <BookItem :source="item" :index="index" />
+        <BookItem :item="item" :index="index" />
       </template>
     </VirtualList>
   </div>
@@ -45,13 +45,17 @@
 <script setup lang="ts">
 import type { DropdownItemOption } from "vant";
 import BookItem from "./components/BookItem.vue";
-import { getBookList, getBookClassify } from "@/api/lengku8";
+import { getBookList, getBookClassifyList } from "@/api/book/platform/lengku8";
+import { GetBookListResult } from "@/api/book/type";
+import { Page } from "@/interfaces/page";
+
+export type BookListItem = GetBookListResult["list"][0] & { page: Page & { index: number } };
 
 defineOptions({
   name: "book-city"
 });
 
-const list = ref<Record<string, any>[]>([]); // 列表数据
+const list = ref<BookListItem[]>([]); // 列表数据
 const page = reactive({
   current: 1, // 当前页
   size: 0, // 每页条数
@@ -59,7 +63,7 @@ const page = reactive({
 });
 const loading = ref(false); // 加载中
 const downMenuForm = reactive({
-  classify: "0",
+  classifyId: "0",
   current: 1
 }); // 下拉筛选表单
 const countPage = computed(() => page.total / page.size); // 总页数
@@ -72,10 +76,10 @@ const bookClassifyList = ref<DropdownItemOption[]>([{ text: "全部", value: "0"
 /**
  * @description: 获取分类列表
  */
-const getBookClassifyList = async () => {
-  const res = await getBookClassify();
+const getBookClassifys = async () => {
+  const res = await getBookClassifyList();
   bookClassifyList.value = res.map((item) => ({
-    text: item.title,
+    text: item.name,
     value: item.id
   }));
 };
@@ -88,22 +92,16 @@ const getList = async () => {
     loading.value = true;
     const res = await getBookList({
       current: page.current,
-      classify: downMenuForm.classify
+      classifyId: downMenuForm.classifyId
     });
     page.current = res.current;
     page.total = res.total;
     page.size = res.size;
     list.value.push(
-      ...res.data.map((item, index) => {
+      ...res.list.map((item, index) => {
         return {
-          id: item.id,
-          bookInfo: {
-            ...item.bookInfo,
-            page: {
-              ...page,
-              index
-            }
-          }
+          ...item,
+          page: { ...page, index }
         };
       })
     );
@@ -124,11 +122,11 @@ const handleScrollToBottom = () => {
 
 /**
  * @description: 处理列表当前展示项索引
- * @param {number} index item下标
+ * @param {BookListItem} item item数据
  */
-const handleCurrentVisibleChange = (index: number) => {
-  if (!list.value[index]) return;
-  listCurrentPage.value = list.value[index].bookInfo.page.current;
+const handleCurrentVisibleChange = (item: BookListItem) => {
+  if (!item) return;
+  listCurrentPage.value = item.page.current;
 };
 
 /**
@@ -157,7 +155,7 @@ const handleChangeClassify = () => {
   getList();
 };
 
-getBookClassifyList();
+getBookClassifys();
 getList();
 </script>
 

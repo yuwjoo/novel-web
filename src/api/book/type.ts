@@ -1,11 +1,12 @@
-import { Book } from "@/types/entity/book";
-import { Chapter } from "@/types/entity/chapter";
-import { Classify } from "@/types/entity/classify";
-import { Page } from "@/types/entity/page";
+import { Book } from "@/interfaces/book";
+import { Chapter } from "@/interfaces/chapter";
+import { Classify } from "@/interfaces/classify";
+import { Page } from "@/interfaces/page";
 
 export type GetBookListParams = {
   current: Page["current"]; // 当前页
   classifyId: Classify["id"]; // 分类id
+  noImageMode?: boolean; // 是否无图模式
 };
 
 export type GetBookListResult = Page & {
@@ -65,13 +66,13 @@ export type GetBookContentResult = {
  */
 export type GetBookContent = (params: GetBookContentParams) => Promise<GetBookContentResult>;
 
-export type GetBookClassifyResult = Classify[];
+export type GetBookClassifyListResult = Classify[];
 
 /**
- * @description: 获取小说分类
- * @return {Promise<GetBookClassifyResult>} 请求结果
+ * @description: 获取小说分类列表
+ * @return {Promise<GetBookClassifyListResult>} 请求结果
  */
-export type GetBookClassify = () => Promise<GetBookClassifyResult>;
+export type GetBookClassifyList = () => Promise<GetBookClassifyListResult>;
 
 export type SearchBookParams = {
   searchValue: string; // 模糊搜索值
@@ -79,7 +80,7 @@ export type SearchBookParams = {
 };
 
 export type SearchBookResult = Page & {
-  list: Pick<Book, "id" | "classify" | "author" | "title" | "origin">[]; // 小说列表
+  list: Pick<Book, "id" | "classify" | "author" | "title" | "bookOrigin">[]; // 小说列表
 };
 
 /**

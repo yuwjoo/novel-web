@@ -1,59 +1,88 @@
 import { useFly } from "@/hooks/fly";
 import { parseHTML } from "@/utils/html";
-import { GetBookList, GetBookListResult } from "../type";
+import {
+  GetBookChapterList,
+  GetBookClassifyList,
+  GetBookContent,
+  GetBookDetail,
+  GetBookList,
+  SearchBook,
+  SearchBookResult
+} from "../type";
+import { Book } from "@/interfaces/book";
+import { Chapter } from "@/interfaces/chapter";
+import { Classify } from "@/interfaces/classify";
+
+const bookOrigin = "lengku8"; // 小说源
 
 /**
  * @description: 获取小说列表
  */
 export const getBookList: GetBookList = async (params) => {
-  const res = await useFly().get(`https://www3.lengku8.cc/category/${params.classify}/${params.current}.html`);
+  const res = await useFly().get(`https://www3.lengku8.cc/category/${params.classifyId}/${params.current}.html`);
   const $ = parseHTML(res.data);
 
-  const list = $(".CGsectionTwo-right-content")
+  const listPromise = $(".CGsectionTwo-right-content")
     .children()
-    .map<GetBookListResult["list"][0]>((_i, el) => {
+    .map<Promise<Book>>((_i, el) => {
       const id =
         $(el)
           .find(".title")
           .attr("href")
           ?.match(/\/book\/(\d+)\//)?.[1] || "";
-      const title = $(el).find(".title").text();
-      const author = $(el).find("a.b").text();
-      const intro = $(el).children("p").eq(2).text();
-      const updateDate =
-        $(el)
-          .children("p")
-          .eq(3)
-          .text()
-          .match(/[\d-]+/)?.[0] || "";
-      return {
-        id,
-        title,
-        author,
-        intro,
-        updateDate,
-        cover: "",
-        classify: "",
-        lastChapter: "",
-        origin: "lengku8"
-      };
+      if (params.noImageMode) {
+        const title = $(el).find(".title").text();
+        const author = $(el).find("a.b").text();
+        const authorId = $(el)
+          .find("a.b")
+          .attr("href")!
+          .match(/\/writer\/(\d+)\//)![1]; // 作者id
+        const intro = $(el).children("p").eq(2).text();
+        const updateDate =
+          $(el)
+            .children("p")
+            .eq(3)
+            .text()
+            .match(/[\d-]+/)?.[0] || "";
+        return Promise.resolve({
+          id,
+          title,
+          cover: "",
+          intro,
+          author: {
+            id: authorId,
+            name: author
+          },
+          classify: {
+            id: "",
+            name: ""
+          },
+          updateDate,
+          lastChapter: {
+            id: "",
+            title: "",
+            isLock: false
+          },
+          state: -1,
+          bookOrigin
+        });
+      } else {
+        return getBookDetail({ id });
+      }
     })
     .toArray();
+  const list = await Promise.all(listPromise);
   const current = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text() || 0);
   const size = Number($(".CGsectionTwo-right-bottom-detail span").eq(2).text() || 0);
   const total = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text() || 0) * size;
 
-  const result: GetBookListResult = { current, size, total, list };
-
-  return result;
+  return { current, size, total, list };
 };
 
 /**
  * @description: 获取小说详情
- * @param {GetBookDetailParams} params 请求参数
- * @return {Promise<GetBookDetailResult>} 请求结果
  */
-export async function getBookDetail(params: GetBookDetailParams): Promise<GetBookDetailResult> {
+export const getBookDetail: GetBookDetail = async (params) => {
   const res = await useFly().get(`https://www3.lengku8.cc/book/${params.id}/`);
   const $ = parseHTML(res.data);
 
@@ -68,21 +97,46 @@ export async function getBookDetail(params: GetBookDetailParams): Promise<GetBoo
     .children("span")
     .map((i, el) => $(el).text())
     .toArray(); // 类别
-  const updateData = $(".BGsectionOne-top-right .time").eq(0).children("span").text(); // 更新时间
+  const classifyId =
+    $(".BGsectionOne-top-right .category").eq(0).find("span a").eq(0).attr("href")?.match(/\d+/)?.[0] || ""; // 分类id
+  const updateDate = $(".BGsectionOne-top-right .time").eq(0).children("span").text(); // 更新时间
   const cover = $(".BGsectionOne-top-left .lazyload").attr("_src") || ""; // 封面
   const intro = $(".BGsectionTwo-bottom").text(); // 简介
   const lastChapter = $(".BGsectionOne-top-right .newestChapter .r").text(); // 最新章节
+  const lastChapterId =
+    $(".BGsectionOne-top-right .newestChapter .r")
+      .attr("href")
+      ?.match(/(\d+)\.html/)?.[1] || ""; // 最新章节id
 
-  return { id: params.id, title, author, authorId, categorys, updateData, cover, intro, lastChapter };
-}
+  return {
+    id: params.id,
+    title,
+    cover,
+    intro,
+    author: {
+      id: authorId,
+      name: author
+    },
+    classify: {
+      id: classifyId,
+      name: categorys[0]
+    },
+    updateDate,
+    lastChapter: {
+      id: lastChapterId,
+      title: lastChapter,
+      isLock: false
+    },
+    state: ["连载", "完结"].indexOf(categorys[2]) as Book["state"],
+    bookOrigin
+  };
+};
 
 /**
- * @description: 获取小说目录
- * @param {GetBookChaptersParams} params 请求参数
- * @return {Promise<GetBookChaptersResult>} 请求结果
+ * @description: 获取小说章节列表
  */
-export async function getBookChapters(params: GetBookChaptersParams): Promise<GetBookChaptersResult> {
-  const list: BookChapter[] = [];
+export const getBookChapterList: GetBookChapterList = async (params) => {
+  const list: Chapter[] = [];
   let currentPage = 1;
   let totalPage = 0;
   do {
@@ -90,7 +144,7 @@ export async function getBookChapters(params: GetBookChaptersParams): Promise<Ge
     const $ = parseHTML(res.data);
 
     const originalOrderArrStr = res.data.match(/var originalOrder = \[(.+)\];/)?.[1]; // 章节排序映射规则数组字符串
-    const tempList: BookChapter[] = [];
+    const tempList: Chapter[] = [];
 
     if (originalOrderArrStr) {
       const originalOrder = originalOrderArrStr.split(","); // 章节排序映射规则
@@ -99,7 +153,8 @@ export async function getBookChapters(params: GetBookChaptersParams): Promise<Ge
           id: $(el)
             .attr("href")!
             .match(/(\d+)\.html/)![1],
-          title: $(el).attr("data-real")!
+          title: $(el).attr("data-real")!,
+          isLock: false
         };
       });
     } else {
@@ -126,26 +181,24 @@ export async function getBookChapters(params: GetBookChaptersParams): Promise<Ge
   } while (currentPage <= totalPage);
 
   return list;
-}
+};
 
 /**
  * @description: 获取小说内容
- * @param {GetBookContentParams} params 请求参数
- * @return {Promise<GetBookContentResult>} 请求结果
  */
-export async function getBookContent(params: GetBookContentParams): Promise<GetBookContentResult> {
+export const getBookContent: GetBookContent = async (params) => {
   const res = await useFly().get(`https://www3.lengku8.cc/book/${params.id}/${params.chapterId}.html`);
   const $ = parseHTML(res.data);
 
-  const contents: string[] = [];
+  const paragraphs: string[] = [];
   let isEnd = false;
   $(".RBGsectionThree-content p").each((i, el) => {
     if ($(el).attr("style") === "color:orange;") isEnd = true;
     if (isEnd) return;
-    contents.push($(el).text());
+    paragraphs.push($(el).text());
   });
   const title = $("#chapterTitle").text(); // 章节标题
-  const preChapterId = ($(".RBGsectionTwo-left .qian_page")
+  const prevChapterId = ($(".RBGsectionTwo-left .qian_page")
     .attr("href")!
     .match(/(\d+)\.html/) || [])![1]; // 上一章id
   const nextChapterId = ($(".RBGsectionTwo-right .hou_page")
@@ -153,51 +206,55 @@ export async function getBookContent(params: GetBookContentParams): Promise<GetB
     .attr("href")!
     .match(/(\d+)\.html/) || [])![1]; // 下一章id
 
-  return { chapterId: params.chapterId, title, contents, preChapterId, nextChapterId };
-}
+  return { chapterId: params.chapterId, title, paragraphs, prevChapterId, nextChapterId };
+};
 
 /**
- * @description: 获取小说分类
- * @return {Promise<GetBookClassifyResult>} 请求结果
+ * @description: 获取小说分类列表
  */
-export async function getBookClassify(): Promise<GetBookClassifyResult> {
+export const getBookClassifyList: GetBookClassifyList = async () => {
   const res = await useFly().get(`https://www3.lengku8.cc/category/`);
   const $ = parseHTML(res.data);
 
-  const list: BookClassify[] = [];
+  const list: Classify[] = [];
   $(".CGsectionTwo-left a").each((i, el) => {
     if (!$(el).text()) return;
     list.push({
       id: $(el).attr("href")!.match(/\d+/)![0],
-      title: $(el).text()
+      name: $(el).text()
     });
   });
 
   return list;
-}
+};
 
 /**
  * @description: 模糊搜索小说
- * @param {SearchBookParams} params 请求参数
- * @return {Promise<SearchBookResult>} 请求结果
  */
-export async function searchBook(params: SearchBookParams): Promise<SearchBookResult> {
+export const searchBook: SearchBook = async (params) => {
   const res = await useFly().get(`https://www3.lengku8.cc/search/${params.searchValue}/${params.current}`);
   const $ = parseHTML(res.data);
 
-  const list: SearchBookItem[] = [];
+  const list: SearchBookResult["list"] = [];
   $(".SHsectionThree-middle p").each((i, el) => {
     const span = $(el).children("span");
     list.push({
       id: span.eq(1).children("a").attr("href")?.match(/\d+/)?.[0] || "",
-      classify: span.eq(0).children("a").text(),
+      classify: {
+        id: span.eq(0).children("a").attr("href")?.match(/\d+/)?.[0] || "",
+        name: span.eq(0).children("a").text()
+      },
       title: span.eq(1).children("a").text(),
-      author: span.eq(2).children("a").text(),
-      authorId: span.eq(2).children("a").attr("href")?.match(/\d+/)?.[0] || ""
+      author: {
+        id: span.eq(2).children("a").attr("href")?.match(/\d+/)?.[0] || "",
+        name: span.eq(2).children("a").text()
+      },
+      bookOrigin
     });
   });
-  const currentPage = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text());
-  const totalPage = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text());
+  const current = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text() || 0);
+  const size = list.length;
+  const total = Number($(".CGsectionTwo-right-bottom-detail span").eq(1).text() || 0) * size;
 
-  return { list, currentPage, totalPage };
-}
+  return { list, current, size, total };
+};
