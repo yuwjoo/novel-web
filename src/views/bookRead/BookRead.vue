@@ -4,11 +4,9 @@
       class="book-read__list"
       :list="list"
       :min-item-size="200"
-      :buffer="500"
       :loading="loading"
-      :on-more="onMore"
       key-field="chapterId"
-      @scroll-bottom="handleScrollBottom"
+      @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
         <BookItem :source="item" :index="index" />
@@ -48,7 +46,6 @@ const bookReadRef = useTemplateRef("bookReadRef");
 
 const list = ref<GetBookContentResult[]>([]); // 列表数据
 const loading = ref(false); // 加载中
-const onMore = ref(false); // 没有更多数据
 const chapters = ref<BookChapter[]>([]); // 章节数据
 const nextChapterId = computed(() => list.value[list.value.length - 1].nextChapterId); // 下一章id
 
@@ -93,7 +90,7 @@ const getChapterData = async () => {
 /**
  * @description: 处理滚动到底部
  */
-const handleScrollBottom = () => {
+const handleScrollToBottom = () => {
   if (!loading.value && nextChapterId.value) {
     getList(nextChapterId.value);
   }

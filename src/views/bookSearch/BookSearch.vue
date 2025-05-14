@@ -6,9 +6,9 @@
       class="book-search__list"
       :list="list"
       :min-item-size="80"
-      :buffer="500"
       :loading="loading"
-      @scroll-bottom="handleScrollBottom"
+      key-field="id"
+      @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
         <BookItem :source="item" :index="index" :search-value="searchValue" />
@@ -69,7 +69,7 @@ const getData = async () => {
 /**
  * @description: 处理滚动到底部
  */
-const handleScrollBottom = () => {
+const handleScrollToBottom = () => {
   if (!loading.value && page.current + 1 <= page.total) {
     page.current++;
     getData();

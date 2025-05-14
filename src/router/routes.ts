@@ -40,6 +40,14 @@ export const routes = [
         meta: {
           title: "阅读"
         }
+      },
+      {
+        path: "test",
+        name: "test",
+        component: () => import("@/views/test/Test.vue"),
+        meta: {
+          title: "测试"
+        }
       }
     ]
   }

@@ -1,11 +1,11 @@
 <template>
   <DynamicScroller
+    class="virtual-list"
     :items="list"
     :min-item-size="minItemSize"
-    class="virtual-list"
     :buffer="buffer"
-    emitUpdate
     :keyField="keyField"
+    emit-update
     @update="handleUpdate"
   >
     <template #default="{ item, index, active }">
@@ -13,23 +13,26 @@
         <slot :item="item" :active="active" :index="index" />
       </DynamicScrollerItem>
     </template>
-    <template v-if="!loading && list.length === 0" #empty>
-      <div class="virtual-list__empty">暂无数据</div>
-    </template>
-    <template v-if="loading && !onMore" #after>
+    <template v-if="loading" #after>
       <div class="virtual-list__loading">Loading ...</div>
+    </template>
+    <template v-else-if="listLength === 0" #empty>
+      <div class="virtual-list__empty">暂无数据</div>
     </template>
   </DynamicScroller>
 </template>
 
 <script setup lang="ts">
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import { DynamicScroller, DynamicScrollerItem } from "vue-virtual-scroller";
+
 defineOptions({
   name: "virtual-list"
 });
 
 const emit = defineEmits<{
-  "scroll-bottom": [];
-  "current-item-index": [number];
+  "scroll-to-bottom": [];
+  "current-visible": [item: any, index: number];
 }>();
 
 const props = defineProps({
@@ -46,36 +49,38 @@ const props = defineProps({
   // 滚动缓冲区
   buffer: {
     type: Number,
-    default: 0
+    default: 500
   },
   // 加载中
   loading: {
     type: Boolean,
     default: false
   },
-  // 没有更多数据
-  onMore: {
-    type: Boolean,
-    default: false
-  },
   // item唯一key
   keyField: {
     type: String,
-    default: "id"
+    required: true
   }
 });
 
-const listLength = computed(() => props.list.length);
+const listLength = computed(() => props.list.length); // 列表长度
 
-const af = ref<number>(-1);
+const af = ref<number>(); // 动画帧Id
 
+/**
+ * @description: 处理视图更新
+ * @param {number} _startIndex 起始渲染位置
+ * @param {number} endIndex 结束渲染位置
+ * @param {number} _visibleStartIndex 起始可视位置
+ * @param {number} visibleEndIndex 结束可视位置
+ */
 const handleUpdate = (_startIndex: number, endIndex: number, _visibleStartIndex: number, visibleEndIndex: number) => {
-  cancelAnimationFrame(af.value);
+  if (af.value !== undefined) cancelAnimationFrame(af.value);
   af.value = requestAnimationFrame(() => {
     if (endIndex === listLength.value) {
-      emit("scroll-bottom");
+      emit("scroll-to-bottom");
     }
-    emit("current-item-index", visibleEndIndex);
+    emit("current-visible", props.list[visibleEndIndex], visibleEndIndex);
   });
 };
 </script>

@@ -21,19 +21,19 @@
         </van-cell>
         <van-cell center title="总页数" :value="countPage" />
         <div class="dropdown-menu__item-btn">
-          <van-button type="primary" block round @click="handleSearchConfirm"> 跳转 </van-button>
+          <van-button type="primary" block round @click="handleSearchConfirm">跳转</van-button>
         </div>
       </van-dropdown-item>
     </van-dropdown-menu>
+
     <VirtualList
       class="book-city__list"
       :list="list"
       :min-item-size="200"
-      :buffer="500"
       :loading="loading"
-      :on-more="onMore"
-      @scroll-bottom="handleScrollBottom"
-      @current-item-index="handleCurrentItemIndex"
+      key-field="id"
+      @scroll-to-bottom="handleScrollToBottom"
+      @current-visible="handleCurrentVisibleChange"
     >
       <template #default="{ item, index }">
         <BookItem :source="item" :index="index" />
@@ -58,7 +58,6 @@ const page = reactive({
   total: 0 // 总条数
 });
 const loading = ref(false); // 加载中
-const onMore = ref(false); // 没有更多数据
 const downMenuForm = reactive({
   classify: "0",
   current: 1
@@ -116,7 +115,7 @@ const getList = async () => {
 /**
  * @description: 处理滚动到底部
  */
-const handleScrollBottom = () => {
+const handleScrollToBottom = () => {
   if (!loading.value && page.current + 1 <= countPage.value) {
     page.current++;
     getList();
@@ -127,7 +126,7 @@ const handleScrollBottom = () => {
  * @description: 处理列表当前展示项索引
  * @param {number} index item下标
  */
-const handleCurrentItemIndex = (index: number) => {
+const handleCurrentVisibleChange = (index: number) => {
   if (!list.value[index]) return;
   listCurrentPage.value = list.value[index].bookInfo.page.current;
 };
