@@ -179,7 +179,7 @@ onActivated(() => {
   .book-detail__secondary {
     padding: 0 16px;
     background: $background-color;
-    margin-bottom: $margin-bottom;
+    margin-bottom: 14px;
 
     .book-detail__secondary-title {
       font-size: $font-size-medium-x;
