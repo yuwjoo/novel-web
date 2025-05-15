@@ -1,14 +1,14 @@
 <template>
-  <div class="book-item" :class="{ 'book-item--page-first': item.page.index === 0 }" @click="handleClickItem(item)">
-    <div v-if="item.page.index === 0" class="book-item-page-divider">
-      第{{ item.page.current }}/{{ item.page.total / item.page.size }}页
+  <div class="book-item" @click="handleClickItem(item)">
+    <van-image class="book-item__img" :src="item.cover" fit="cover"></van-image>
+    <div class="book-item__content">
+      <div class="book-item__title">{{ item.title }}</div>
+      <div class="book-item__intro">{{ item.intro }}</div>
+      <div class="book-item__info">
+        <div class="book-item__author">作者：{{ item.author.name }}</div>
+        <div class="book-item__update-date">最近更新：{{ item.updateDate }}</div>
+      </div>
     </div>
-    <div class="book-item__title">{{ item.title }}</div>
-    <div class="book-item__info">
-      <div class="book-item__author">作者：{{ item.author.name }}</div>
-      <div class="book-item__update-date">最近更新：{{ item.updateDate }}</div>
-    </div>
-    <div class="book-item__describe">{{ item.intro }}</div>
   </div>
 </template>
 
@@ -52,49 +52,53 @@ const handleClickItem = (item: BookListItem) => {
 .book-item {
   padding: 16px 10px;
   border-bottom: 1px solid $border-color;
-  position: relative;
+  display: flex;
 
-  &.book-item--page-first {
-    padding-top: 36.8px;
+  &__img {
+    width: 70px;
+    height: 100px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    overflow: hidden;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
   }
 
-  .book-item-page-divider {
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: $font-size-medium-x;
-    color: $font-color-ll;
-    background: $theme-color;
-    padding: 3.2px 8px;
-    border-radius: 4.8px;
-  }
-
-  .book-item__title {
-    font-size: $font-size-large-x;
-    color: $font-color-dd;
-    font-weight: bold;
-
-    &::before {
-      content: "";
-      float: left;
-      width: 4.8px;
-      height: 19.2px;
-      background: $theme-color;
-      margin: 0 3.2px 0 0;
-    }
-  }
-
-  .book-item__info {
-    margin-top: 11.2px;
-    font-size: $font-size-medium;
+  &__content {
+    width: 0;
+    flex-grow: 1;
+    margin: 5px 0 5px 10px;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
   }
 
-  .book-item__describe {
-    margin-top: 11.2px;
+  .book-item__title {
+    font-size: $font-size-large;
+    color: $font-color-dd;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .book-item__intro {
+    margin-top: 10px;
     color: $font-color-d;
+    font-size: $font-size-medium;
+    line-height: 1.2;
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .book-item__info {
+    margin-top: 10px;
+    font-size: $font-size-small;
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>

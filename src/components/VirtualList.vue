@@ -14,7 +14,7 @@
       </DynamicScrollerItem>
     </template>
     <template v-if="loading" #after>
-      <div class="virtual-list__loading">Loading ...</div>
+      <div class="virtual-list__loading"><van-loading /></div>
     </template>
     <template v-else-if="listLength === 0" #empty>
       <div class="virtual-list__empty">暂无数据</div>

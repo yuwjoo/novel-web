@@ -18,12 +18,14 @@ declare module 'vue' {
     VanDropdownMenu: typeof import('vant/es')['DropdownMenu']
     VanHighlight: typeof import('vant/es')['Highlight']
     VanIcon: typeof import('vant/es')['Icon']
+    VanImage: typeof import('vant/es')['Image']
     VanLoading: typeof import('vant/es')['Loading']
     VanOverlay: typeof import('vant/es')['Overlay']
     VanSearch: typeof import('vant/es')['Search']
     VanSidebar: typeof import('vant/es')['Sidebar']
     VanSidebarItem: typeof import('vant/es')['SidebarItem']
     VanStepper: typeof import('vant/es')['Stepper']
+    VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
     VirtualList: typeof import('./../components/VirtualList.vue')['default']
   }
 }
