@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "menu-tabbar"
+  name: "menuTabbar"
 });
 </script>
 

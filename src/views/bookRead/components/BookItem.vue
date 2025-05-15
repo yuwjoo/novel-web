@@ -1,27 +1,29 @@
 <template>
   <div class="book-item">
-    <h1 class="book-item__title">{{ source.title }}</h1>
-    <p class="book-item__text" v-for="(text, index) in source.contents" :key="index">
+    <h1 class="book-item__title">{{ item.title }}</h1>
+    <p class="book-item__text" v-for="(text, index) in item.paragraphs" :key="index">
       {{ text }}
     </p>
   </div>
 </template>
 
-<script>
-export default {
-  name: "book-item",
-  props: {
-    index: {
-      type: Number
-    },
-    source: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
+<script setup lang="ts">
+import { GetBookContentResult } from "@/api/book/type";
+
+defineOptions({
+  name: "bookItem"
+});
+
+defineProps({
+  index: {
+    type: Number,
+    required: true
+  },
+  item: {
+    type: Object as PropType<GetBookContentResult>,
+    required: true
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

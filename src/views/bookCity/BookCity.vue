@@ -52,7 +52,7 @@ import { Page } from "@/interfaces/page";
 export type BookListItem = GetBookListResult["list"][0] & { page: Page & { index: number } };
 
 defineOptions({
-  name: "book-city"
+  name: "bookCity"
 });
 
 const list = ref<BookListItem[]>([]); // 列表数据

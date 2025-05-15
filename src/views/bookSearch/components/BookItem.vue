@@ -1,44 +1,52 @@
 <template>
-  <div class="book-item" @click="handleClickItem(source)">
-    <van-highlight class="book-item__title" :keywords="[searchValue]" :source-string="source.title" />
+  <div class="book-item" @click="handleClickItem(item)">
+    <van-highlight class="book-item__title" :keywords="[searchValue]" :source-string="item.title" />
     <div class="book-item__info">
-      <div class="book-item__classify">分类：{{ source.classify }}</div>
+      <div class="book-item__classify">分类：{{ item.classify.name }}</div>
       <div class="book-item__author">
-        作者：<van-highlight :keywords="[searchValue]" :source-string="source.author" />
+        作者：<van-highlight :keywords="[searchValue]" :source-string="item.author.name" />
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "book-item",
-  props: {
-    index: {
-      type: Number
-    },
-    source: {
-      type: Object,
-      default() {
-        return {};
-      }
-    },
-    searchValue: {
-      type: String,
-      required: true
-    }
+<script setup lang="ts">
+import { SearchBookResult } from "@/api/book/type";
+import { useRouter } from "@/router";
+import { PropType } from "vue";
+
+defineOptions({
+  name: "bookItem"
+});
+
+defineProps({
+  index: {
+    type: Number,
+    required: true
   },
-  methods: {
-    // 点击书籍跳转到详情页
-    handleClickItem(item) {
-      this.$router.push({
-        name: "bookDetail",
-        query: {
-          id: item.id
-        }
-      });
-    }
+  item: {
+    type: Object as PropType<SearchBookResult["list"][0]>,
+    required: true
+  },
+  searchValue: {
+    type: String,
+    required: true
   }
+});
+
+const router = useRouter();
+
+/**
+ * @description: 点击书籍跳转到详情页
+ * @param {SearchBookResult["list"][0]} item 当前项
+ */
+const handleClickItem = (item: SearchBookResult["list"][0]) => {
+  router.push({
+    name: "bookDetail",
+    query: {
+      id: item.id
+    }
+  });
 };
 </script>
 

@@ -53,7 +53,7 @@
 import { useBookReadSetting } from "@/store/bookReadSetting";
 
 export default {
-  name: "setting-btn",
+  name: "settingBtn",
   props: {
     showFlag: {
       type: Boolean,

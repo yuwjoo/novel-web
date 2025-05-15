@@ -9,7 +9,7 @@
       @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
-        <BookItem :source="item" :index="index" />
+        <BookItem :item="item" :index="index" />
       </template>
     </VirtualList>
 
@@ -27,14 +27,15 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "@/router";
-import { getBookContent, getBookChapters, type BookChapter, type GetBookContentResult } from "@/api/lengku8";
+import { getBookContent, getBookChapterList } from "@/api/book/platform/lengku8";
 import BookItem from "./components/BookItem.vue";
 import SettingBtn from "./components/SettingBtn.vue";
 import type { Chapter } from "@/components/CatalogPanel.vue";
 import { useBookReadSetting } from "@/store/bookReadSetting";
+import { GetBookChapterListResult, GetBookContentResult } from "@/api/book/type";
 
 defineOptions({
-  name: "book-read"
+  name: "bookRead"
 });
 
 const route = useRoute();
@@ -46,7 +47,7 @@ const bookReadRef = useTemplateRef("bookReadRef");
 
 const list = ref<GetBookContentResult[]>([]); // 列表数据
 const loading = ref(false); // 加载中
-const chapters = ref<BookChapter[]>([]); // 章节数据
+const chapters = ref<GetBookChapterListResult>([]); // 章节数据
 const nextChapterId = computed(() => list.value[list.value.length - 1].nextChapterId); // 下一章id
 
 const showCatalogPlan = ref(false); // 显示章节面板
@@ -84,7 +85,7 @@ const getList = async (chapterId: string) => {
  * @description: 获取章节数据
  */
 const getChapterData = async () => {
-  chapters.value = await getBookChapters({ id: route.query.id as string });
+  chapters.value = await getBookChapterList({ id: route.query.id as string });
 };
 
 /**

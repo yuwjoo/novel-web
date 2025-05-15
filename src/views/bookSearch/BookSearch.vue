@@ -11,18 +11,19 @@
       @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
-        <BookItem :source="item" :index="index" :search-value="searchValue" />
+        <BookItem :item="item" :index="index" :search-value="searchValue" />
       </template>
     </VirtualList>
   </div>
 </template>
 
 <script setup lang="ts">
-import { searchBook, SearchBookItem } from "@/api/lengku8";
+import { searchBook } from "@/api/book/platform/lengku8";
 import BookItem from "./components/BookItem.vue";
+import { SearchBookResult } from "@/api/book/type";
 
 defineOptions({
-  name: "book-search"
+  name: "bookSearch"
 });
 
 const searchValue = ref(""); // 模糊搜索值
@@ -32,7 +33,7 @@ const page = reactive({
   total: 0
 });
 const loading = ref(false);
-const list = ref<SearchBookItem[]>([]);
+const list = ref<SearchBookResult["list"]>([]);
 
 /**
  * @description: 处理模糊查询
@@ -58,8 +59,8 @@ const getData = async () => {
   loading.value = true;
   try {
     const res = await searchBook({ searchValue: searchValue.value, current: page.current });
-    page.current = res.currentPage;
-    page.total = res.totalPage;
+    page.current = res.current;
+    page.total = res.total;
     list.value.push(...res.list);
   } finally {
     loading.value = false;
@@ -70,7 +71,7 @@ const getData = async () => {
  * @description: 处理滚动到底部
  */
 const handleScrollToBottom = () => {
-  if (!loading.value && page.current + 1 <= page.total) {
+  if (!loading.value && page.current + 1 <= page.total / page.size) {
     page.current++;
     getData();
   }

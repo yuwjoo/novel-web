@@ -11,16 +11,16 @@
         <img class="book-detail__cover" :src="bookInfo.cover" />
         <div class="book-detail__info">
           <h1 class="book-detail__info-title">{{ bookInfo.title }}</h1>
-          <p class="book-detail__info-author">作者：{{ bookInfo.author }}</p>
-          <p class="book-detail__info-category">类别：{{ (bookInfo.categorys || []).join(" | ") }}</p>
+          <p class="book-detail__info-author">作者：{{ bookInfo.author.name }}</p>
+          <p class="book-detail__info-category">类型：{{ bookInfo.classify.name }}</p>
         </div>
       </div>
       <div class="book-detail__secondary">
         <h1 class="book-detail__secondary-title">简介</h1>
         <p class="book-detail__secondary-intro">{{ bookInfo.intro }}</p>
         <div class="book-detail__secondary-other">
-          <span class="book-detail__secondary-latest">最新 {{ bookInfo.lastChapter }}</span>
-          <span class="book-detail__secondary-update">{{ bookInfo.updateData }}</span>
+          <span class="book-detail__secondary-latest">最新 {{ bookInfo.lastChapter.title }}</span>
+          <span class="book-detail__secondary-update">{{ bookInfo.updateDate }}</span>
         </div>
       </div>
 
@@ -38,12 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { getBookChapters, getBookDetail, GetBookDetailResult, type BookChapter } from "@/api/lengku8";
+import { getBookChapterList, getBookDetail } from "@/api/book/platform/lengku8";
+import { GetBookChapterListResult, GetBookDetailResult } from "@/api/book/type";
 import type { Chapter } from "@/components/CatalogPanel.vue";
 import { useRoute, useRouter } from "@/router";
 
 defineOptions({
-  name: "book-detail"
+  name: "bookDetail"
 });
 
 const route = useRoute();
@@ -51,8 +52,29 @@ const router = useRouter();
 
 const loading = ref(false); // 加载中
 
-const bookInfo = ref<GetBookDetailResult | Record<string, any>>({}); // 小说信息
-const chapters = ref<BookChapter[]>([]); // 章节数据
+const bookInfo = ref<GetBookDetailResult>({
+  id: "",
+  title: "",
+  cover: "",
+  intro: "",
+  author: {
+    id: "",
+    name: ""
+  },
+  classify: {
+    id: "",
+    name: ""
+  },
+  updateDate: "",
+  lastChapter: {
+    id: "",
+    title: "",
+    isLock: false
+  },
+  state: 0,
+  bookOrigin: ""
+}); // 小说信息
+const chapters = ref<GetBookChapterListResult>([]); // 章节数据
 
 const bgImgStyle = computed(() => ({
   backgroundImage: `url(${bookInfo.value.cover})`
@@ -73,7 +95,7 @@ const getData = async () => {
   try {
     const [detailRes, chapterRes] = await Promise.all([
       getBookDetail({ id: route.query.id as string }),
-      getBookChapters({ id: route.query.id as string })
+      getBookChapterList({ id: route.query.id as string })
     ]);
     bookInfo.value = detailRes;
     chapters.value = chapterRes;

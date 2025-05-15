@@ -18,7 +18,7 @@ import type { PropType } from "vue";
 import { BookListItem } from "../BookCity.vue";
 
 defineOptions({
-  name: "book-item"
+  name: "bookItem"
 });
 
 defineProps({
