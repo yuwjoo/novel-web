@@ -1,13 +1,13 @@
 export const routes = [
   {
     path: "/",
-    component: () => import("@/layout/Layout.vue"),
-    redirect: { name: "bookCity" },
+    component: () => import("@/layout/layout-main.vue"),
+    redirect: { name: "book-city" },
     children: [
       {
-        path: "bookCity",
-        name: "bookCity",
-        component: () => import("@/views/bookCity/BookCity.vue"),
+        path: "book-city",
+        name: "book-city",
+        component: () => import("@/views/book-city/book-city.vue"),
         meta: {
           title: "书城",
           keepAlive: true,
@@ -15,9 +15,9 @@ export const routes = [
         }
       },
       {
-        path: "bookSearch",
-        name: "bookSearch",
-        component: () => import("@/views/bookSearch/BookSearch.vue"),
+        path: "book-search",
+        name: "book-search",
+        component: () => import("@/views/book-search/book-search.vue"),
         meta: {
           title: "搜索",
           keepAlive: true,
@@ -25,28 +25,20 @@ export const routes = [
         }
       },
       {
-        path: "bookDetail",
-        name: "bookDetail",
-        component: () => import("@/views/bookDetail/BookDetail.vue"),
+        path: "book-detail",
+        name: "book-detail",
+        component: () => import("@/views/book-detail/book-detail.vue"),
         meta: {
           title: "详情",
           keepAlive: true
         }
       },
       {
-        path: "bookRead",
-        name: "bookRead",
-        component: () => import("@/views/bookRead/BookRead.vue"),
+        path: "book-read",
+        name: "book-read",
+        component: () => import("@/views/book-read/book-read.vue"),
         meta: {
           title: "阅读"
-        }
-      },
-      {
-        path: "test",
-        name: "test",
-        component: () => import("@/views/test/Test.vue"),
-        meta: {
-          title: "测试"
         }
       }
     ]

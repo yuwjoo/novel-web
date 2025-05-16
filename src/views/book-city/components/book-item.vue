@@ -15,10 +15,10 @@
 <script setup lang="ts">
 import { useRouter } from "@/router";
 import type { PropType } from "vue";
-import { BookListItem } from "../BookCity.vue";
+import { BookListItem } from "../book-city.vue";
 
 defineOptions({
-  name: "bookItem"
+  name: "book-item"
 });
 
 defineProps({
@@ -40,7 +40,7 @@ const router = useRouter();
  */
 const handleClickItem = (item: BookListItem) => {
   router.push({
-    name: "bookDetail",
+    name: "book-detail",
     query: {
       id: item.id
     }

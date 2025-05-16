@@ -16,7 +16,7 @@ import { useRouter } from "@/router";
 import { PropType } from "vue";
 
 defineOptions({
-  name: "bookItem"
+  name: "book-item"
 });
 
 defineProps({
@@ -42,7 +42,7 @@ const router = useRouter();
  */
 const handleClickItem = (item: SearchBookResult["list"][0]) => {
   router.push({
-    name: "bookDetail",
+    name: "book-detail",
     query: {
       id: item.id
     }

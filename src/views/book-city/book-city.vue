@@ -26,7 +26,7 @@
       </van-dropdown-item>
     </van-dropdown-menu>
 
-    <VirtualList
+    <virtual-list
       class="book-city__list"
       :list="list"
       :min-item-size="200"
@@ -36,15 +36,15 @@
       @current-visible="handleCurrentVisibleChange"
     >
       <template #default="{ item, index }">
-        <BookItem :item="item" :index="index" />
+        <book-item :item="item" :index="index" />
       </template>
-    </VirtualList>
+    </virtual-list>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { DropdownItemOption } from "vant";
-import BookItem from "./components/BookItem.vue";
+import BookItem from "./components/book-item.vue";
 import { getBookList, getBookClassifyList } from "@/api/book/platform/lengku8";
 import { GetBookListResult } from "@/api/book/type";
 import { Page } from "@/interfaces/page";
@@ -52,7 +52,7 @@ import { Page } from "@/interfaces/page";
 export type BookListItem = GetBookListResult["list"][0] & { page: Page & { index: number } };
 
 defineOptions({
-  name: "bookCity"
+  name: "book-city"
 });
 
 const list = ref<BookListItem[]>([]); // 列表数据

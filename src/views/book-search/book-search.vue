@@ -2,7 +2,7 @@
   <div class="book-search">
     <van-search v-model="searchValue" placeholder="请输入书名或者作者名" @search="handleSearch" @clear="handleClear" />
 
-    <VirtualList
+    <virtual-list
       class="book-search__list"
       :list="list"
       :min-item-size="80"
@@ -11,19 +11,19 @@
       @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
-        <BookItem :item="item" :index="index" :search-value="searchValue" />
+        <book-item :item="item" :index="index" :search-value="searchValue" />
       </template>
-    </VirtualList>
+    </virtual-list>
   </div>
 </template>
 
 <script setup lang="ts">
 import { searchBook } from "@/api/book/platform/lengku8";
-import BookItem from "./components/BookItem.vue";
+import BookItem from "./components/book-item.vue";
 import { SearchBookResult } from "@/api/book/type";
 
 defineOptions({
-  name: "bookSearch"
+  name: "book-search"
 });
 
 const searchValue = ref(""); // 模糊搜索值

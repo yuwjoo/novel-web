@@ -1,5 +1,5 @@
 <template>
-  <DynamicScroller
+  <dynamic-scroller
     class="virtual-list"
     :items="list"
     :min-item-size="minItemSize"
@@ -9,9 +9,9 @@
     @update="handleUpdate"
   >
     <template #default="{ item, index, active }">
-      <DynamicScrollerItem :item="item" :active="active" :data-index="index">
+      <dynamic-scroller-item :item="item" :active="active" :data-index="index">
         <slot :item="item" :active="active" :index="index" />
-      </DynamicScrollerItem>
+      </dynamic-scroller-item>
     </template>
     <template v-if="loading" #after>
       <div class="virtual-list__loading"><van-loading /></div>
@@ -19,7 +19,7 @@
     <template v-else-if="listLength === 0" #empty>
       <div class="virtual-list__empty">暂无数据</div>
     </template>
-  </DynamicScroller>
+  </dynamic-scroller>
 </template>
 
 <script setup lang="ts">

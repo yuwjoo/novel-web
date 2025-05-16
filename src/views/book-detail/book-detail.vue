@@ -25,7 +25,7 @@
       </div>
 
       <div class="book-detail__catalog-panel">
-        <CatalogPanel :list="chapters" @change="handleClickChapter" />
+        <catalog-panel :list="chapters" @change="handleClickChapter" />
       </div>
     </div>
 
@@ -40,11 +40,11 @@
 <script setup lang="ts">
 import { getBookChapterList, getBookDetail } from "@/api/book/platform/lengku8";
 import { GetBookChapterListResult, GetBookDetailResult } from "@/api/book/type";
-import type { Chapter } from "@/components/CatalogPanel.vue";
+import type { Chapter } from "@/components/catalog-panel.vue";
 import { useRoute, useRouter } from "@/router";
 
 defineOptions({
-  name: "bookDetail"
+  name: "book-detail"
 });
 
 const route = useRoute();
@@ -110,7 +110,7 @@ const getData = async () => {
  */
 const handleClickChapter = (item: Chapter) => {
   router.push({
-    name: "bookRead",
+    name: "book-read",
     query: { id: route.query.id, chapterId: item.id }
   });
 };

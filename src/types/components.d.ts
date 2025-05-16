@@ -8,7 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    CatalogPanel: typeof import('./../components/CatalogPanel.vue')['default']
+    CatalogPanel: typeof import('./../components/catalog-panel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanButton: typeof import('vant/es')['Button']
@@ -25,7 +25,6 @@ declare module 'vue' {
     VanSidebar: typeof import('vant/es')['Sidebar']
     VanSidebarItem: typeof import('vant/es')['SidebarItem']
     VanStepper: typeof import('vant/es')['Stepper']
-    VanTextEllipsis: typeof import('vant/es')['TextEllipsis']
-    VirtualList: typeof import('./../components/VirtualList.vue')['default']
+    VirtualList: typeof import('./../components/virtual-list.vue')['default']
   }
 }

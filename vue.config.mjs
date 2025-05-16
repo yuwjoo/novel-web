@@ -1,12 +1,20 @@
 import { defineConfig } from "@vue/cli-service";
 import { initAutoImport, initComponents, initIcons } from "./builder/webpackPlugins.mjs";
 import { toFilePath } from "./builder/utils.mjs";
+import webpack from "webpack";
 
 export default defineConfig({
   transpileDependencies: true,
   publicPath: process.env.NODE_ENV === "development" ? "/" : "./",
   configureWebpack: {
-    plugins: [initAutoImport(), initComponents(), initIcons()],
+    plugins: [
+      new webpack.DefinePlugin({
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+      }),
+      initAutoImport(),
+      initComponents(),
+      initIcons()
+    ],
     resolve: {
       alias: {
         "@": toFilePath("./src")

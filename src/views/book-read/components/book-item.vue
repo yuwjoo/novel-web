@@ -11,7 +11,7 @@
 import { GetBookContentResult } from "@/api/book/type";
 
 defineOptions({
-  name: "bookItem"
+  name: "book-item"
 });
 
 defineProps({

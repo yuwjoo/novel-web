@@ -1,12 +1,12 @@
 <template>
   <div class="menu-tabbar">
-    <router-link class="menu-tabbar__item" to="/bookCity" replace>
+    <router-link class="menu-tabbar__item" to="/book-city" replace>
       <div class="menu-tabbar__content">
         <i class="menu-tabbar__icon icon-bookshelf"></i>
         <span class="menu-tabbar__title">书城</span>
       </div>
     </router-link>
-    <router-link class="menu-tabbar__item" to="/bookSearch" replace>
+    <router-link class="menu-tabbar__item" to="/book-search" replace>
       <div class="menu-tabbar__content">
         <i class="menu-tabbar__icon icon-search"></i>
         <span class="menu-tabbar__title">搜索</span>
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 defineOptions({
-  name: "menuTabbar"
+  name: "menu-tabbar"
 });
 </script>
 

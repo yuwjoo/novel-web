@@ -1,6 +1,6 @@
 <template>
   <van-config-provider :theme="theme" theme-vars-scope="global">
-    <RouterView />
+    <router-view />
   </van-config-provider>
 </template>
 

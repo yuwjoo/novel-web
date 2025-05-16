@@ -1,6 +1,6 @@
 <template>
   <div class="book-read" ref="bookReadRef" @click="showSetting = !showSetting">
-    <VirtualList
+    <virtual-list
       class="book-read__list"
       :list="list"
       :min-item-size="200"
@@ -9,16 +9,16 @@
       @scroll-to-bottom="handleScrollToBottom"
     >
       <template #default="{ item, index }">
-        <BookItem :item="item" :index="index" />
+        <book-item :item="item" :index="index" />
       </template>
-    </VirtualList>
+    </virtual-list>
 
     <div v-if="showCatalogPlan" class="book-read__catalog" @click.stop>
       <div class="book-read__catalog-header">
         <i class="book-read__catalog-header-back icon-back" @click="showCatalogPlan = false"></i>
         <span class="book-read__catalog-header-label">返回</span>
       </div>
-      <CatalogPanel class="book-read__catalog-panel" :list="chapters" @change="handleClickChapter" />
+      <catalog-panel class="book-read__catalog-panel" :list="chapters" @change="handleClickChapter" />
     </div>
   </div>
 
@@ -28,14 +28,14 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "@/router";
 import { getBookContent, getBookChapterList } from "@/api/book/platform/lengku8";
-import BookItem from "./components/BookItem.vue";
-import SettingBtn from "./components/SettingBtn.vue";
-import type { Chapter } from "@/components/CatalogPanel.vue";
+import BookItem from "./components/book-item.vue";
+import SettingBtn from "./components/setting-btn.vue";
+import type { Chapter } from "@/components/catalog-panel.vue";
 import { useBookReadSetting } from "@/store/bookReadSetting";
 import { GetBookChapterListResult, GetBookContentResult } from "@/api/book/type";
 
 defineOptions({
-  name: "bookRead"
+  name: "book-read"
 });
 
 const route = useRoute();

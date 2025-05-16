@@ -8,7 +8,7 @@
 import { useRoute } from "@/router";
 
 defineOptions({
-  name: "menuNavbar"
+  name: "menu-navbar"
 });
 
 const route = useRoute();
