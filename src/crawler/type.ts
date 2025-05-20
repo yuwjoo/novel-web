@@ -2,7 +2,7 @@
  * 小说爬虫
  */
 export interface IBookCrawler {
-  origin: IBookOrigin; // 小说来源
+  origin: IOrigin; // 小说来源
 
   search(params: ISearchParams): Promise<ISearchResult>; // 模糊搜索小说
 
@@ -29,7 +29,7 @@ export interface ISearchParams {
  * 模糊查询结果
  */
 export interface ISearchResult extends IPage {
-  list: Pick<IBook, "id" | "classify" | "author" | "title" | "bookOrigin">[]; // 小说列表
+  list: Pick<IBook, "id" | "classify" | "author" | "title" | "origin">[]; // 小说列表
 }
 
 /**
@@ -94,7 +94,7 @@ export interface IBook {
   updateDate: string; // 更新日期
   lastChapter: IChapter; // 最新章节
   state: -1 | 0 | 1; // 状态："未知" | "连载" | "完结"
-  bookOrigin: IBookOrigin; // 小说来源
+  origin: IOrigin; // 小说来源
 }
 
 /**
@@ -125,7 +125,7 @@ export interface IClassify {
 /**
  * 小说来源
  */
-export interface IBookOrigin {
+export interface IOrigin {
   key: string; // 唯一标识
   name: string; // 名称
   url: string; // 地址

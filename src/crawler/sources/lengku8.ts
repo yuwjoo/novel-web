@@ -11,12 +11,12 @@ import {
   IGetListResult,
   ISearchParams,
   ISearchResult,
-  IBookOrigin
+  IOrigin
 } from "../type";
 import { BaseCrawler } from "../baseCrawler";
 
 class BookCrawler extends BaseCrawler implements IBookCrawler {
-  origin: IBookOrigin = {
+  origin: IOrigin = {
     key: "lengku8",
     name: "冷酷文学",
     url: "https://www3.lengku8.cc"
@@ -40,7 +40,7 @@ class BookCrawler extends BaseCrawler implements IBookCrawler {
           id: span.eq(2).children("a").attr("href")?.match(/\d+/)?.[0] || "",
           name: span.eq(2).children("a").text()
         },
-        bookOrigin: this.origin
+        origin: this.origin
       });
     });
     const current = Number($(".CGsectionTwo-right-bottom-detail span").eq(0).text() || 0);
@@ -112,7 +112,7 @@ class BookCrawler extends BaseCrawler implements IBookCrawler {
               isLock: false
             },
             state: -1,
-            bookOrigin: this.origin
+            origin: this.origin
           });
         } else {
           return this.getDetail({ id });
@@ -173,7 +173,7 @@ class BookCrawler extends BaseCrawler implements IBookCrawler {
         isLock: false
       },
       state: ["连载", "完结"].indexOf(categorys[2]) as IBook["state"],
-      bookOrigin: this.origin
+      origin: this.origin
     };
   }
 
