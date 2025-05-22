@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^13.1.0",
+    "axios": "^1.9.0",
     "core-js": "^3.8.3",
     "dsbridge": "^3.1.4",
     "flyio": "^0.6.14",

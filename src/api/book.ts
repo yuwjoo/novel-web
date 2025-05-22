@@ -1,4 +1,3 @@
-import lengku8Crawler from "@/crawler/sources/lengku8";
 import {
   IBook,
   IChapter,
@@ -11,29 +10,30 @@ import {
   IGetListResult,
   ISearchParams,
   ISearchResult
-} from "@/crawler/type";
+} from "@/crawler/books/type";
 import { IBookExtraParams } from "./type";
+import { useCrawler } from "@/crawler";
 
 export function searchBook(params: ISearchParams & IBookExtraParams): Promise<ISearchResult> {
-  return lengku8Crawler.search(params);
+  return useCrawler().books["lengku8"].search(params);
 }
 
 export function getBookClassifyList(_params: IBookExtraParams): Promise<IClassify[]> {
-  return lengku8Crawler.getClassifyList();
+  return useCrawler().books["lengku8"].getClassifyList();
 }
 
 export function getBookList(params: IGetListParams & IBookExtraParams): Promise<IGetListResult> {
-  return lengku8Crawler.getList(params);
+  return useCrawler().books["lengku8"].getList(params);
 }
 
 export function getBookDetail(params: IGetDetailParams & IBookExtraParams): Promise<IBook> {
-  return lengku8Crawler.getDetail(params);
+  return useCrawler().books["lengku8"].getDetail(params);
 }
 
 export function getBookChapterList(params: IGetChapterListParams & IBookExtraParams): Promise<IChapter[]> {
-  return lengku8Crawler.getChapterList(params);
+  return useCrawler().books["lengku8"].getChapterList(params);
 }
 
 export function getBookContent(params: IGetBookContentParams & IBookExtraParams): Promise<IGetBookContentResult> {
-  return lengku8Crawler.getBookContent(params);
+  return useCrawler().books["lengku8"].getBookContent(params);
 }
