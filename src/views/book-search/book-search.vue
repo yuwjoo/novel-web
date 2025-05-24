@@ -18,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import { searchBook } from "@/api/book/platform/lengku8";
+import { searchBook } from "@/api/book";
 import BookItem from "./components/book-item.vue";
-import { SearchBookResult } from "@/api/book/type";
+import { IApiSearchBookResult } from "@/api/type";
 
 defineOptions({
   name: "book-search"
@@ -33,7 +33,7 @@ const page = reactive({
   total: 0
 });
 const loading = ref(false);
-const list = ref<SearchBookResult["list"]>([]);
+const list = ref<IApiSearchBookResult["list"]>([]);
 
 /**
  * @description: 处理模糊查询

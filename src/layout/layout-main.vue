@@ -2,7 +2,7 @@
   <div class="layout-main">
     <menu-navbar v-show="route.meta.main" class="layout-main__header" />
     <div class="layout-main__content">
-      <router-view v-slot="{ Component }">
+      <router-view v-slot="{ Component }" :key="bookPlatform.currentPlatformKey">
         <keep-alive :include="routerStore.keepAliveList">
           <component :is="Component" />
         </keep-alive>
@@ -16,6 +16,7 @@
 import MenuNavbar from "@/layout/components/menu-navbar.vue";
 import MenuTabbar from "@/layout/components/menu-tabbar.vue";
 import { useRoute } from "@/router";
+import { useBookPlatform } from "@/store/bookPlatform";
 import { useRouterStore } from "@/store/router";
 
 defineOptions({
@@ -25,6 +26,7 @@ defineOptions({
 const route = useRoute();
 
 const routerStore = useRouterStore();
+const bookPlatform = useBookPlatform();
 </script>
 
 <style lang="scss" scoped>

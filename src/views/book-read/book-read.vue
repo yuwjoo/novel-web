@@ -27,12 +27,12 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "@/router";
-import { getBookContent, getBookChapterList } from "@/api/book/platform/lengku8";
+import { getBookContent, getBookChapterList } from "@/api/book";
 import BookItem from "./components/book-item.vue";
 import SettingBtn from "./components/setting-btn.vue";
 import type { Chapter } from "@/components/catalog-panel.vue";
 import { useBookReadSetting } from "@/store/bookReadSetting";
-import { GetBookChapterListResult, GetBookContentResult } from "@/api/book/type";
+import { IApiGetBookChapterListResult, IApiGetBookContentResult } from "@/api/type";
 
 defineOptions({
   name: "book-read"
@@ -45,9 +45,9 @@ const bookReadSetting = useBookReadSetting();
 
 const bookReadRef = useTemplateRef("bookReadRef");
 
-const list = ref<GetBookContentResult[]>([]); // 列表数据
+const list = ref<IApiGetBookContentResult[]>([]); // 列表数据
 const loading = ref(false); // 加载中
-const chapters = ref<GetBookChapterListResult>([]); // 章节数据
+const chapters = ref<IApiGetBookChapterListResult>([]); // 章节数据
 const nextChapterId = computed(() => list.value[list.value.length - 1].nextChapterId); // 下一章id
 
 const showCatalogPlan = ref(false); // 显示章节面板

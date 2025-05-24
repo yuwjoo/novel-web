@@ -38,8 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { getBookChapterList, getBookDetail } from "@/api/book/platform/lengku8";
-import { GetBookChapterListResult, GetBookDetailResult } from "@/api/book/type";
+import { getBookChapterList, getBookDetail } from "@/api/book";
+import { IApiGetBookChapterListResult, IApiGetBookDetailResult } from "@/api/type";
 import type { Chapter } from "@/components/catalog-panel.vue";
 import { useRoute, useRouter } from "@/router";
 
@@ -52,7 +52,7 @@ const router = useRouter();
 
 const loading = ref(false); // 加载中
 
-const bookInfo = ref<GetBookDetailResult>({
+const bookInfo = ref<IApiGetBookDetailResult>({
   id: "",
   title: "",
   cover: "",
@@ -72,9 +72,13 @@ const bookInfo = ref<GetBookDetailResult>({
     isLock: false
   },
   state: 0,
-  bookOrigin: ""
+  origin: {
+    key: "",
+    name: "",
+    url: ""
+  }
 }); // 小说信息
-const chapters = ref<GetBookChapterListResult>([]); // 章节数据
+const chapters = ref<IApiGetBookChapterListResult>([]); // 章节数据
 
 const bgImgStyle = computed(() => ({
   backgroundImage: `url(${bookInfo.value.cover})`

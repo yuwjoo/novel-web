@@ -45,11 +45,11 @@
 <script setup lang="ts">
 import type { DropdownItemOption } from "vant";
 import BookItem from "./components/book-item.vue";
-import { getBookList, getBookClassifyList } from "@/api/book/platform/lengku8";
-import { GetBookListResult } from "@/api/book/type";
+import { getBookList, getBookClassifyList } from "@/api/book";
+import { IApiGetBookListResult } from "@/api/type";
 import { Page } from "@/interfaces/page";
 
-export type BookListItem = GetBookListResult["list"][0] & { page: Page & { index: number } };
+export type BookListItem = IApiGetBookListResult["list"][0] & { page: Page & { index: number } };
 
 defineOptions({
   name: "book-city"
