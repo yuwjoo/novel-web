@@ -40,6 +40,14 @@ export const routes = [
         meta: {
           title: "阅读"
         }
+      },
+      {
+        path: "test-page",
+        name: "test-page",
+        component: () => import("@/views/test-page/test-page.vue"),
+        meta: {
+          title: "测试页面"
+        }
       }
     ]
   }

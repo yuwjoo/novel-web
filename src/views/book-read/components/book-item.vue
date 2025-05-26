@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { GetBookContentResult } from "@/api/book/type";
+import { IApiGetBookContentResult } from "@/api/type";
 
 defineOptions({
   name: "book-item"
@@ -20,7 +20,7 @@ defineProps({
     required: true
   },
   item: {
-    type: Object as PropType<GetBookContentResult>,
+    type: Object as PropType<IApiGetBookContentResult>,
     required: true
   }
 });

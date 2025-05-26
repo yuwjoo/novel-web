@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { SearchBookResult } from "@/api/book/type";
+import { IApiSearchBookResult } from "@/api/type";
 import { useRouter } from "@/router";
 import { PropType } from "vue";
 
@@ -25,7 +25,7 @@ defineProps({
     required: true
   },
   item: {
-    type: Object as PropType<SearchBookResult["list"][0]>,
+    type: Object as PropType<IApiSearchBookResult["list"][0]>,
     required: true
   },
   searchValue: {
@@ -38,9 +38,9 @@ const router = useRouter();
 
 /**
  * @description: 点击书籍跳转到详情页
- * @param {SearchBookResult["list"][0]} item 当前项
+ * @param {IApiSearchBookResult["list"][0]} item 当前项
  */
-const handleClickItem = (item: SearchBookResult["list"][0]) => {
+const handleClickItem = (item: IApiSearchBookResult["list"][0]) => {
   router.push({
     name: "book-detail",
     query: {
