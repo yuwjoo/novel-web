@@ -52,7 +52,7 @@ export interface ProgressEvent {
   lengthComputable: boolean;
 }
 
-export interface RequestResponse<T = any, D = any> {
+export interface RequestResponse<T = any> {
   data: T;
   status: number;
   statusText: string;

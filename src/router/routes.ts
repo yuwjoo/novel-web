@@ -2,7 +2,7 @@ export const routes = [
   {
     path: "/",
     component: () => import("@/layout/layout-main.vue"),
-    redirect: { name: "book-city" },
+    redirect: { name: "test-page" },
     children: [
       {
         path: "book-city",
