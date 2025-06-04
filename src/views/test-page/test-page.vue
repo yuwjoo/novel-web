@@ -25,9 +25,9 @@ requestApp({
   }
 });
 
-setTimeout(() => {
-  source.cancel("3333");
-}, 2000);
+// setTimeout(() => {
+//   source.cancel("3333");
+// }, 2000);
 </script>
 
 <style lang="scss" scoped>
