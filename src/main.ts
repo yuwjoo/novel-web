@@ -4,6 +4,9 @@ import App from "@/App.vue";
 import { createApp } from "vue";
 import { useRouter } from "@/router";
 import { createPinia } from "pinia";
+import VConsole from "vconsole";
+
+new VConsole();
 
 const app = createApp(App);
 

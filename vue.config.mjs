@@ -29,6 +29,11 @@ export default defineConfig({
     }
   },
   devServer: {
-    port: 9000
+    port: 9000,
+    client: {
+      overlay: {
+        runtimeErrors: false // 运行时未捕获的错误不全屏覆盖展示
+      }
+    }
   }
 });

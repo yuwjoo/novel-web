@@ -17,7 +17,7 @@ const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
 requestApp({
-  url: "/aa",
+  url: "http://www.baidu.com",
   cancelToken: source.token,
   headers: {
     "Access-Control-Allow-Origin": "*",

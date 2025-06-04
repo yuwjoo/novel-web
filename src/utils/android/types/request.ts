@@ -13,6 +13,7 @@ export interface AndroidRequestConfig<D = any> {
   responseType?: ResponseType;
   onUploadProgress?: (progressEvent: ProgressEvent) => void;
   onDownloadProgress?: (progressEvent: ProgressEvent) => void;
+  abortSignal?: AbortSignal; // 取消请求信号对象
 }
 
 export type Method =

@@ -5,15 +5,8 @@ import { AndroidRequest } from "../types/request";
  * @description: 发送网络请求
  */
 export const request: AndroidRequest = (config) => {
-  (config as any).cancelToken.promise
-    .then((res) => {
-      console.log("成功", res);
-    })
-    .catch((err) => {
-      console.log("取消", err);
-    });
-  console.log(config);
   return new Promise((resolve, reject) => {
+    const cancelable = !!config.abortSignal; // 该请求是可以被取消的
     const options = {
       url: new URL(config.url, config.baseURL || location.origin).href,
       method: config.method || "get",
@@ -21,11 +14,17 @@ export const request: AndroidRequest = (config) => {
       params: config.params,
       data: config.data,
       timeout: config.timeout || 0,
-      responseType: config.responseType
+      responseType: config.responseType,
+      cancelable
     };
+    let cancelToken: string;
     const handler = (value: string) => {
       const { type, data } = JSON.parse(value);
       switch (type) {
+        case "setCancelToken":
+          cancelToken = data;
+          callCancel();
+          break;
         case "uploadProgress":
           config.onUploadProgress?.(data);
           break;
@@ -40,7 +39,15 @@ export const request: AndroidRequest = (config) => {
           break;
       }
     };
+    const callCancel = () => {
+      if (!config.abortSignal!.aborted) return;
+      dsBridge.call("cancelRequest", cancelToken);
+      reject((config.abortSignal as any)!.reason);
+    };
 
+    if (cancelable) {
+      config.abortSignal!.onabort = callCancel;
+    }
     dsBridge.call("request", options, handler);
   });
 };
