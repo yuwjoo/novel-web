@@ -30,19 +30,13 @@ export async function getChapterList(params: IGetChapterListParams): Promise<ICh
       });
     } else {
       $(".BCsectionTwo-top .BCsectionTwo-top-chapter").each((i, el) => {
-        const pos = $(el).attr("data-x")!;
+        const pos = $(el).attr("data-x") ?? $(el).attr("data-iddd")!;
         const a = $(el).children("a");
-        if (a.attr("data-link")) {
-          tempList[pos] = {
-            id: atob(a.attr("data-link")!).match(/(\d+)\.html/)![1],
-            title: a.attr("abc-title")!
-          };
-        } else {
-          tempList[pos] = {
-            id: atob(a.attr("data-sb")!).match(/(\d+)\.html/)![1],
-            title: a.attr("uc-title")!
-          };
-        }
+        const bookContentLink = a.attr("data-link") ?? a.attr("data-sb") ?? a.attr("data-wawa")!;
+        const id = atob(bookContentLink).match(/(\d+)\.html/)![1];
+        const title = a.attr("abc-title") ?? a.attr("uc-title") ?? a.attr("data-btbt") ?? a.text().trim();
+
+        tempList[pos] = { id, title };
       });
     }
 
