@@ -13,7 +13,7 @@ export const request: AndroidRequest = (config) => {
       headers: handleHeaders(config),
       params: config.params,
       data: handleData(config),
-      timeout: config.timeout || 0,
+      timeout: config.timeout || -1,
       responseType: config.responseType,
       cancelable
     };
@@ -72,9 +72,9 @@ function handleHeaders(config: AndroidRequestConfig): Record<string, any> {
  * @return {any} 处理设置后的body数据
  */
 function handleData(config: AndroidRequestConfig): any {
-  if (!config.data) return undefined; // 如果没有数据，直接返回undefined
+  if (!config.data) return;
   let data: any;
-  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+  if (config.data instanceof FormData) {
     data = {};
     for (const [key, value] of config.data.entries()) {
       data[key] = value;
