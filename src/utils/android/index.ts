@@ -1,6 +1,7 @@
 import { request } from "./handler/request";
-import { AndroidApi } from "./types";
+import { XHR } from "./handler/xhr";
 
-export const androidApi: Readonly<AndroidApi> = {
-  request
+export const androidApi = {
+  request,
+  XMLHttpRequestForAndroid: XHR
 };
