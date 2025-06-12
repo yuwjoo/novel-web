@@ -1,7 +1,9 @@
-import { AndroidRequestOptions, XMLHttpRequestForAndroid } from "../types/xhr";
+import { AndroidRequestOptions, Multipart, XMLHttpRequestForAndroid } from "../types/xhr";
+import dsBridge from "dsbridge";
 
 export class XHR implements XMLHttpRequestForAndroid {
   private options: AndroidRequestOptions;
+  private requestId: string;
 
   onreadystatechange: ((this: XMLHttpRequest, ev: Event) => any) | null;
   readyState: number;
@@ -39,6 +41,7 @@ export class XHR implements XMLHttpRequestForAndroid {
       headers: {},
       timeout: 0,
       body: "",
+      multiparts: [],
       cancelable: false
     };
 
@@ -88,16 +91,67 @@ export class XHR implements XMLHttpRequestForAndroid {
     throw new Error("Method not implemented.");
   }
   send(body?: Document | XMLHttpRequestBodyInit | null): void {
-    if (this.options.headers["accept"] === undefined) {
-      this.options.headers["accept"] = "*/*";
-    }
-    if (this.options.headers["content-type"] === undefined) {
-      if (body instanceof FormData) {
-        this.options.headers["content-type"] = "multipart/form-data";
-      } else {
-        this.options.headers["content-type"] = "text/plain";
+    let bodyContentType: string;
+
+    switch (Object.prototype.toString.call(body)) {
+      case "[object FormData]": {
+        bodyContentType = "multipart/form-data";
+        (body as FormData).forEach((value, key) => {
+          let multipart: Multipart;
+          if (value instanceof File) {
+            multipart = {
+              type: "file",
+              name: key,
+              value: value.webkitRelativePath,
+              filename: value.name,
+              mimeType: value.type
+            };
+          } else {
+            multipart = {
+              type: "field",
+              name: key,
+              value
+            };
+          }
+          this.options.multiparts.push(multipart);
+        });
+        break;
+      }
+      case "[object URLSearchParams]": {
+        bodyContentType = "application/x-www-form-urlencoded";
+        this.options.body = (body as URLSearchParams).toString();
+        break;
+      }
+      default: {
+        bodyContentType = "text/plain";
+        this.options.body = body?.toString() || "";
       }
     }
+    this.options.headers["content-type"] = this.options.headers["content-type"] ?? bodyContentType;
+    this.options.headers["accept"] = this.options.headers["accept"] ?? "*/*";
+    this.options.timeout = this.timeout;
+
+    dsBridge.call("request", this.options, (result: string) => {
+      const { type, data } = JSON.parse(result);
+      switch (type) {
+        case "requestId":
+          this.requestId = data;
+          // callCancel();
+          break;
+        case "uploadProgress":
+          // config.onUploadProgress?.(data);
+          break;
+        case "downloadProgress":
+          // config.onDownloadProgress?.(data);
+          break;
+        case "response":
+          // resolve(data);
+          break;
+        case "error":
+          // reject(data);
+          break;
+      }
+    });
   }
   setRequestHeader(name: string, value: string): void {
     const lName = name.toLowerCase();
