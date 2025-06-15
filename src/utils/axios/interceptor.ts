@@ -1,5 +1,12 @@
 import { AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import androidAdapter from "./androidAdapter";
+// import androidAdapter from "./androidAdapter";
+import * as aa from "axios";
+import { androidApi } from "../android";
+
+function wrapAdapter(config: InternalAxiosRequestConfig) {
+  // window.XMLHttpRequest = androidApi.XMLHttpRequestForAndroid as any;
+  return aa.getAdapter("xhr").call({ XMLHttpRequest: androidApi.XMLHttpRequestForAndroid }, config);
+}
 
 /**
  * @description: 请求拦截器
@@ -8,12 +15,11 @@ import androidAdapter from "./androidAdapter";
  */
 export function onRequestFulfilled(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   switch (config.sendEnv) {
-    case "web":
-      config.adapter = ["xhr", "http", "fetch"];
-      break;
     case "android":
-      config.adapter = androidAdapter;
+      config.adapter = wrapAdapter;
       break;
+    default:
+      config.adapter = ["xhr", "http", "fetch"];
   }
   return config;
 }

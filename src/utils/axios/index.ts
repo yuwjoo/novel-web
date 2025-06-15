@@ -1,7 +1,7 @@
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { onRequestFulfilled, onRequestRejected, onResponseFulfilled, onResponseRejected } from "./interceptor";
 
-export const defaultConfig: Partial<InternalAxiosRequestConfig> = {
+export const defaultConfig: AxiosRequestConfig = {
   timeout: 30000,
   sendEnv: "web"
 };

@@ -119,11 +119,11 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
   upload: XMLHttpRequestUploadForAndroid;
   withCredentials: boolean;
 
-  UNSENT: 0;
-  OPENED: 1;
-  HEADERS_RECEIVED: 2;
-  LOADING: 3;
-  DONE: 4;
+  readonly UNSENT: 0;
+  readonly OPENED: 1;
+  readonly HEADERS_RECEIVED: 2;
+  readonly LOADING: 3;
+  readonly DONE: 4;
 
   get onreadystatechange() {
     return this.#onreadystatechange;
@@ -197,14 +197,14 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
 
   open(method: string, url: string | URL): void;
   open(method: string, url: string | URL, async: boolean, username?: string | null, password?: string | null): void;
-  open(method: unknown, url: unknown, async?: unknown, username?: unknown, password?: unknown): void {
+  open(method: unknown, url: unknown): void {
     this.options.method = (<string>method || "GET").toUpperCase();
     this.options.url = typeof url === "string" ? url : (<URL>url).toString();
     this.readyState = this.OPENED;
   }
 
   overrideMimeType(mime: string): void {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented." + mime);
   }
 
   async send(body?: Document | XMLHttpRequestBodyInit | null): Promise<void> {
@@ -215,6 +215,8 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
     this.options.headers["content-type"] = this.options.headers["content-type"] ?? bodyContentType;
     this.options.headers["accept"] = this.options.headers["accept"] ?? "*/*";
     this.options.timeout = this.timeout;
+
+    console.log("android options", this.options);
 
     dsBridge.call("request", this.options, (result: string) => {
       if (this.readyState === this.DONE) return; // 请求已完成，不再接收任何响应
@@ -235,10 +237,31 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
           this.status = data.status;
           this.statusText = data.statusText;
           this.responseHeaders = data.headers;
-          this.response = data.body;
           this.responseURL = data.url;
           this.readyState = this.HEADERS_RECEIVED; // 该状态代表响应头已返回，但实际响应头和响应体是一起回来的，所以和完成状态放在一起
           this.readyState = this.DONE;
+          try {
+            switch (this.responseType) {
+              case "arraybuffer":
+                this.response = new TextEncoder().encode(data.body).buffer;
+                break;
+              case "blob":
+                this.response = new Blob([data.body], { type: this.getResponseHeader("content-type") || undefined });
+                break;
+              case "document":
+                this.response = new DOMParser().parseFromString(data.body, "text/html");
+                break;
+              case "json":
+                this.response = JSON.parse(data.body);
+                break;
+              case "text":
+              default:
+                this.response = data.body;
+            }
+          } catch {
+            this.response = null;
+          }
+          this.responseText = data.body;
           this.dispatchEventAll(new ProgressEvent("load"));
           this.dispatchEventAll(new ProgressEvent("loadend"));
           break;
@@ -332,10 +355,8 @@ async function handleSendBody(body?: Document | XMLHttpRequestBodyInit | null) {
   } else if (body instanceof Blob) {
     bodyContentType = body.type;
     bodyBlobText = await body.text();
-  } else if (body instanceof ArrayBuffer) {
-    bodyBlobText = new TextDecoder().decode(body);
   } else {
-    bodyBlobText = new TextDecoder().decode(body.buffer);
+    bodyBlobText = new TextDecoder("utf-8").decode(body);
   }
 
   return { bodyContentType, bodyText, bodyBlobText, bodyMultiparts };
