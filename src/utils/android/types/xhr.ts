@@ -7,7 +7,7 @@ export interface AndroidRequestOptions {
   timeout: number; // 超时时间
   bodyText?: string; // body文本
   bodyBlobText?: string; // body二进制文本
-  bodyMultiparts?: (BodyMultipartField | BodyMultipartBlob)[]; // body分块数据集合
+  bodyMultipartList?: (BodyMultipartField | BodyMultipartBlob)[]; // body分块数据列表
 }
 
 export interface BodyMultipartField {

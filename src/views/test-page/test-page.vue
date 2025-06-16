@@ -59,21 +59,18 @@ urlParams.append("size", "10");
 //   });
 
 request({
-  url: "http://192.168.0.108:3000/test-post",
+  url: "http://192.168.0.106:3000/test-post",
   method: "post",
   params: {
     name: "test22",
     age: 18
   },
   cancelToken: source.token,
-  headers: {
-    "Content-Type": "text/plain"
-  },
-  data: {
-    aa: 1,
-    bb: 2
-  },
-  // data: formData,
+  // data: {
+  //   aa: 1,
+  //   bb: 2
+  // },
+  data: urlParams,
   sendEnv: "android"
 })
   .then((res) => {

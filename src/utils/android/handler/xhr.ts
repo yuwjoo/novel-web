@@ -208,10 +208,10 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
   }
 
   async send(body?: Document | XMLHttpRequestBodyInit | null): Promise<void> {
-    const { bodyContentType, bodyText, bodyBlobText, bodyMultiparts } = await handleSendBody(body);
+    const { bodyContentType, bodyText, bodyBlobText, bodyMultipartList } = await handleSendBody(body);
     this.options.bodyText = bodyText;
     this.options.bodyBlobText = bodyBlobText;
-    this.options.bodyMultiparts = bodyMultiparts;
+    this.options.bodyMultipartList = bodyMultipartList;
     this.options.headers["content-type"] = this.options.headers["content-type"] ?? bodyContentType;
     this.options.headers["accept"] = this.options.headers["accept"] ?? "*/*";
     this.options.timeout = this.timeout;
@@ -314,10 +314,10 @@ async function handleSendBody(body?: Document | XMLHttpRequestBodyInit | null) {
   let bodyContentType: string | undefined = undefined;
   let bodyText: string | undefined = undefined;
   let bodyBlobText: string | undefined = undefined;
-  let bodyMultiparts: (BodyMultipartField | BodyMultipartBlob)[] | undefined = undefined;
+  let bodyMultipartList: (BodyMultipartField | BodyMultipartBlob)[] | undefined = undefined;
 
   if (body === null || body === undefined) {
-    return { bodyContentType, bodyText, bodyBlobText, bodyMultiparts };
+    return { bodyContentType, bodyText, bodyBlobText, bodyMultipartList };
   }
 
   if (typeof body === "string") {
@@ -325,7 +325,7 @@ async function handleSendBody(body?: Document | XMLHttpRequestBodyInit | null) {
     bodyText = body;
   } else if (body instanceof FormData) {
     bodyContentType = "multipart/form-data";
-    bodyMultiparts = [];
+    bodyMultipartList = [];
     for (const [key, value] of body.entries()) {
       let bodyMultipart: BodyMultipartField | BodyMultipartBlob;
       if (value instanceof File) {
@@ -344,7 +344,7 @@ async function handleSendBody(body?: Document | XMLHttpRequestBodyInit | null) {
           value
         };
       }
-      bodyMultiparts.push(bodyMultipart);
+      bodyMultipartList.push(bodyMultipart);
     }
   } else if (body instanceof URLSearchParams) {
     bodyContentType = "application/x-www-form-urlencoded";
@@ -359,5 +359,5 @@ async function handleSendBody(body?: Document | XMLHttpRequestBodyInit | null) {
     bodyBlobText = new TextDecoder("utf-8").decode(body);
   }
 
-  return { bodyContentType, bodyText, bodyBlobText, bodyMultiparts };
+  return { bodyContentType, bodyText, bodyBlobText, bodyMultipartList };
 }
