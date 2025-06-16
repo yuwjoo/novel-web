@@ -216,8 +216,6 @@ export class XHR extends XMLHttpRequestEventTargetForAndroid implements XMLHttpR
     this.options.headers["accept"] = this.options.headers["accept"] ?? "*/*";
     this.options.timeout = this.timeout;
 
-    console.log("android options", this.options);
-
     dsBridge.call("request", this.options, (result: string) => {
       if (this.readyState === this.DONE) return; // 请求已完成，不再接收任何响应
       const { type, data } = <AndroidRequestResult>JSON.parse(result);
