@@ -8,18 +8,28 @@
 import axios from "axios";
 import BookReader from "./components/book-reader/book-reader.vue";
 import { request } from "@/utils/axios";
+import { crawlers } from "@/utils/crawler";
 
 defineOptions({
   name: "test-page"
 });
 
+const name = "lengku8";
+
+console.log("aa", crawlers[name]);
+
 const CancelToken = axios.CancelToken;
 const source = CancelToken.source();
 
-// const formData = new FormData();
-// formData.append("keyword", "姐姐");
-// formData.append("page", 2);
-// formData.append("size", 10);
+const formData = new FormData();
+formData.append("keyword", "姐姐");
+formData.append("page", "2");
+formData.append("size", "10");
+
+const urlParams = new URLSearchParams();
+urlParams.append("keyword", "姐姐");
+urlParams.append("page", "2");
+urlParams.append("size", "10");
 
 // requestApp({
 //   url: "http://192.168.0.108:3000/test-post",
@@ -56,11 +66,14 @@ request({
     age: 18
   },
   cancelToken: source.token,
-  headers: {},
+  headers: {
+    "Content-Type": "text/plain"
+  },
   data: {
     aa: 1,
     bb: 2
   },
+  // data: formData,
   sendEnv: "android"
 })
   .then((res) => {
