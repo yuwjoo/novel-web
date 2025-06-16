@@ -13,6 +13,7 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "verbatimModuleSyntax": true,
     "types": [
       "webpack-env",
       "unplugin-icons/types/vue"
@@ -20,6 +21,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@node_modules/*": [
+        "node_modules/*"
       ]
     },
     "lib": [

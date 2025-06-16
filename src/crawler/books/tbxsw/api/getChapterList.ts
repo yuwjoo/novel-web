@@ -1,4 +1,4 @@
-import { IGetChapterListParams, IChapter } from "@/crawler/books/type";
+import type { IGetChapterListParams, IChapter } from "@/crawler/books/type";
 import { parseHTMLStr, request } from "@/crawler/utils";
 
 /**

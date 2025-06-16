@@ -1,4 +1,4 @@
-import { IClassify } from "@/crawler/books/type";
+import type { IClassify } from "@/crawler/books/type";
 import { parseHTMLStr, request } from "@/crawler/utils";
 
 /**

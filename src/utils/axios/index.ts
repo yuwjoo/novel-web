@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import { onRequestFulfilled, onRequestRejected, onResponseFulfilled, onResponseRejected } from "./interceptor";
 
 export const defaultConfig: AxiosRequestConfig = {

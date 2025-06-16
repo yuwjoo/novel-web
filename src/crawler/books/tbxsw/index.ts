@@ -1,4 +1,4 @@
-import { IBookCrawler, IOrigin } from "@/crawler/books/type";
+import type { IBookCrawler, IOrigin } from "@/crawler/books/type";
 import { search } from "./api/search";
 import { getClassifyList } from "./api/getClassifyList";
 import { getList } from "./api/getList";

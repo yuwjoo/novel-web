@@ -1,5 +1,5 @@
 import dsBridge from "dsbridge";
-import { AndroidRequest, AndroidRequestConfig } from "../types/request";
+import type { AndroidRequest, AndroidRequestConfig } from "../types/request";
 
 /**
  * @description: 发送网络请求

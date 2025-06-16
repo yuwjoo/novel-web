@@ -1,4 +1,4 @@
-import { ISearchParams, ISearchResult } from "@/crawler/books/type";
+import type { ISearchParams, ISearchResult } from "@/crawler/books/type";
 import { bookOrigin } from "..";
 import { parseHTMLStr, request } from "@/crawler/utils";
 

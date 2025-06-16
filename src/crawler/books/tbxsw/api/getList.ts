@@ -1,4 +1,4 @@
-import { IGetListParams, IGetListResult, IBook } from "@/crawler/books/type";
+import type { IGetListParams, IGetListResult, IBook } from "@/crawler/books/type";
 import { parseHTMLStr, request } from "@/crawler/utils";
 import { bookOrigin } from "..";
 import { getDetail } from "./getDetail";

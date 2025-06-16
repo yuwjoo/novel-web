@@ -1,6 +1,6 @@
 import { useCrawler } from "@/crawler";
 import { useBookPlatform } from "@/store/bookPlatform";
-import {
+import type {
   IApiSearchBookParams,
   IApiSearchBookResult,
   IApiGetBookClassifyListResult,

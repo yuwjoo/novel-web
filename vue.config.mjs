@@ -17,7 +17,8 @@ export default defineConfig({
     ],
     resolve: {
       alias: {
-        "@": toFilePath("./src")
+        "@": toFilePath("./src"),
+        "@node_modules": toFilePath("./node_modules")
       }
     }
   },

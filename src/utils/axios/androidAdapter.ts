@@ -1,16 +1,16 @@
-import utils from "axios/lib/utils.js";
-import settle from "axios/lib/core/settle.js";
-import transitionalDefaults from "axios/lib/defaults/transitional.js";
-import AxiosError from "axios/lib/core/AxiosError.js";
-import CanceledError from "axios/lib/cancel/CanceledError.js";
-import parseProtocol from "axios/lib/helpers/parseProtocol.js";
-import platform from "axios/lib/platform/index.js";
-import AxiosHeaders from "axios/lib/core/AxiosHeaders.js";
-import { progressEventReducer } from "axios/lib/helpers/progressEventReducer.js";
-import resolveConfig from "axios/lib/helpers/resolveConfig.js";
-import { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import utils from "@node_modules/axios/lib/utils.js";
+import settle from "@node_modules/axios/lib/core/settle.js";
+import transitionalDefaults from "@node_modules/axios/lib/defaults/transitional.js";
+import AxiosError from "@node_modules/axios/lib/core/AxiosError.js";
+import CanceledError from "@node_modules/axios/lib/cancel/CanceledError.js";
+import parseProtocol from "@node_modules/axios/lib/helpers/parseProtocol.js";
+import platform from "@node_modules/axios/lib/platform/index.js";
+import AxiosHeaders from "@node_modules/axios/lib/core/AxiosHeaders.js";
+import { progressEventReducer } from "@node_modules/axios/lib/helpers/progressEventReducer.js";
+import resolveConfig from "@node_modules/axios/lib/helpers/resolveConfig.js";
 import { androidApi } from "../android";
-import { XMLHttpRequestForAndroid } from "../android/types/xhr";
+import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { XMLHttpRequestForAndroid } from "../android/types/xhr";
 
 export default function (config: InternalAxiosRequestConfig) {
   return new Promise<AxiosResponse>(function dispatchXhrRequest(resolve, reject) {

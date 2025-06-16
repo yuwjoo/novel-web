@@ -1,12 +1,5 @@
-import { AxiosResponse, InternalAxiosRequestConfig } from "axios";
-// import androidAdapter from "./androidAdapter";
-import * as aa from "axios";
-import { androidApi } from "../android";
-
-function wrapAdapter(config: InternalAxiosRequestConfig) {
-  // window.XMLHttpRequest = androidApi.XMLHttpRequestForAndroid as any;
-  return aa.getAdapter("xhr").call({ XMLHttpRequest: androidApi.XMLHttpRequestForAndroid }, config);
-}
+import type { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import androidAdapter from "./androidAdapter";
 
 /**
  * @description: 请求拦截器
@@ -16,7 +9,7 @@ function wrapAdapter(config: InternalAxiosRequestConfig) {
 export function onRequestFulfilled(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   switch (config.sendEnv) {
     case "android":
-      config.adapter = wrapAdapter;
+      config.adapter = androidAdapter;
       break;
     default:
       config.adapter = ["xhr", "http", "fetch"];
