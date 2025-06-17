@@ -7,9 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
+import type { PropType } from "vue";
 import ActionBar from "./action-bar/action-bar.vue";
-import BookPage, { IBookPagePage } from "./book-page/book-page.vue";
+import BookPage, { type BookPagePage } from "./book-page/book-page.vue";
 
 defineOptions({
   name: "book-reader"
@@ -26,7 +26,7 @@ defineProps({
   }
 });
 
-const pages = ref<IBookPagePage[]>([
+const pages = ref<BookPagePage[]>([
   {
     id: "1",
     title: "测试标题",

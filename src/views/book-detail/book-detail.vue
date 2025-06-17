@@ -38,9 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { getBookChapterList, getBookDetail } from "@/api/book";
-import { IApiGetBookChapterListResult, IApiGetBookDetailResult } from "@/api/type";
-import type { Chapter } from "@/components/catalog-panel.vue";
+import { getBookAllChapterList, getBookDetail } from "@/api/book";
+import type { ApiGetBookDetailResult, ApiGetBookAllChapterListResult } from "@/api/types/book";
+import type { Chapter } from "@/components/catalog-panel/type";
 import { useRoute, useRouter } from "@/router";
 
 defineOptions({
@@ -52,7 +52,7 @@ const router = useRouter();
 
 const loading = ref(false); // 加载中
 
-const bookInfo = ref<IApiGetBookDetailResult>({
+const bookInfo = ref<ApiGetBookDetailResult>({
   id: "",
   title: "",
   cover: "",
@@ -71,14 +71,9 @@ const bookInfo = ref<IApiGetBookDetailResult>({
     title: "",
     isLock: false
   },
-  state: 0,
-  origin: {
-    key: "",
-    name: "",
-    url: ""
-  }
+  state: -1
 }); // 小说信息
-const chapters = ref<IApiGetBookChapterListResult>([]); // 章节数据
+const chapters = ref<ApiGetBookAllChapterListResult>([]); // 章节数据
 
 const bgImgStyle = computed(() => ({
   backgroundImage: `url(${bookInfo.value.cover})`
@@ -99,7 +94,7 @@ const getData = async () => {
   try {
     const [detailRes, chapterRes] = await Promise.all([
       getBookDetail({ id: route.query.id as string }),
-      getBookChapterList({ id: route.query.id as string })
+      getBookAllChapterList({ id: route.query.id as string })
     ]);
     bookInfo.value = detailRes;
     chapters.value = chapterRes;

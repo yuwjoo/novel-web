@@ -13,10 +13,10 @@
             <span
               class="item"
               :style="{ background: item }"
-              :class="{ active: item === bookReadSetting.settings.customBg }"
+              :class="{ active: item === bookStore.settings.customBg }"
               @click="changeColor(item)"
             >
-              <i class="icon-tick" v-show="item === bookReadSetting.settings.customBg"></i>
+              <i class="icon-tick" v-show="item === bookStore.settings.customBg"></i>
             </span>
           </div>
         </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { useBookReadSetting } from "@/store/bookReadSetting";
+import { useBook } from "@/store/book";
 
 export default {
   name: "setting-btn",
@@ -64,15 +64,15 @@ export default {
     return {
       setting: false,
       color: ["#f6f6f6", "#e1d4b2", "#bed8ab", "#efc1c1", "#dcc49e", "#d9e8ff"],
-      bookReadSetting: useBookReadSetting()
+      bookStore: useBook()
     };
   },
   computed: {
     modeCls() {
-      return this.bookReadSetting.settings.isNight ? "icon-brightness" : "icon-night";
+      return this.bookStore.settings.isNight ? "icon-brightness" : "icon-night";
     },
     modeText() {
-      return this.bookReadSetting.settings.isNight ? "白天" : "夜间";
+      return this.bookStore.settings.isNight ? "白天" : "夜间";
     }
   },
   methods: {
@@ -83,26 +83,26 @@ export default {
       this.$emit("openChapters");
     },
     changeMode() {
-      this.bookReadSetting.setSetting("isNight", !this.bookReadSetting.settings.isNight);
+      this.bookStore.setSetting("isNight", !this.bookStore.settings.isNight);
     },
     openSetting() {
       this.setting = !this.setting;
     },
     changeColor(item) {
-      if (item === this.bookReadSetting.settings.customBg) return;
-      this.bookReadSetting.setSetting("customBg", item);
+      if (item === this.bookStore.settings.customBg) return;
+      this.bookStore.setSetting("customBg", item);
     },
     minusFontSize() {
-      if (this.bookReadSetting.settings.fontSizeScale <= -5) {
+      if (this.bookStore.settings.fontSizeScale <= -5) {
         return;
       }
-      this.bookReadSetting.setSetting("fontSizeScale", this.bookReadSetting.settings.fontSizeScale - 1);
+      this.bookStore.setSetting("fontSizeScale", this.bookStore.settings.fontSizeScale - 1);
     },
     addFontSize() {
-      if (this.bookReadSetting.settings.fontSizeScale >= 5) {
+      if (this.bookStore.settings.fontSizeScale >= 5) {
         return;
       }
-      this.bookReadSetting.setSetting("fontSizeScale", this.bookReadSetting.settings.fontSizeScale + 1);
+      this.bookStore.setSetting("fontSizeScale", this.bookStore.settings.fontSizeScale + 1);
     }
   },
   watch: {

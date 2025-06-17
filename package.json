@@ -13,8 +13,6 @@
     "cheerio": "^1.1.0",
     "core-js": "^3.8.3",
     "dsbridge": "^3.1.4",
-    "flyio": "^0.6.14",
-    "jquery": "^3.7.1",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.2",
     "vant": "^4.9.19",

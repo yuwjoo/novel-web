@@ -2,7 +2,7 @@
   <div class="menu-navbar">
     <div class="menu-navbar__title">
       <span class="menu-navbar__title-item menu-navbar__platform" @click="showPicker = true">
-        {{ bookPlatform.currentPlatform?.name }}
+        {{ currentBookPlatform?.name }}
         <van-icon class="menu-navbar__platform-icon" name="arrow-down" />
       </span>
       <span class="menu-navbar__title-item menu-navbar__label">{{ route.meta.title }}</span>
@@ -11,8 +11,8 @@
     <van-popup v-model:show="showPicker" round position="bottom">
       <van-picker
         title="小说平台"
-        :columns="bookPlatform.bookPlatformList"
-        :columns-field-names="{ text: 'name', value: 'key' }"
+        :columns="bookPlatform.list"
+        :columns-field-names="{ text: 'title', value: 'name' }"
         @cancel="showPicker = false"
         @confirm="handleConfirmPlatform"
       />
@@ -22,23 +22,26 @@
 
 <script setup lang="ts">
 import { useRoute } from "@/router";
-import { useBookPlatform } from "@/store/bookPlatform";
+import { useBook } from "@/store/book";
+import { storeToRefs } from "pinia";
 
 defineOptions({
   name: "menu-navbar"
 });
 
 const route = useRoute();
-const bookPlatform = useBookPlatform();
+const { bookPlatform } = storeToRefs(useBook());
 
 const showPicker = ref(false); // 显示平台选择器
+
+const currentBookPlatform = computed(() => bookPlatform.value.list.find((v) => v.name === bookPlatform.value.current)); // 当前选中的平台
 
 /**
  * @description: 处理确认选择平台
  * @param {string[]} selectedValues 当前选中值集合
  */
-const handleConfirmPlatform = ({ selectedValues }) => {
-  bookPlatform.currentPlatformKey = selectedValues[0];
+const handleConfirmPlatform = ({ selectedValues }: { selectedValues: string[] }) => {
+  bookPlatform.value.current = selectedValues[0];
   showPicker.value = false;
 };
 </script>

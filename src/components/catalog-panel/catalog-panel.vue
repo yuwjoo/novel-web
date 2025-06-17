@@ -29,16 +29,7 @@
 
 <script setup lang="ts">
 import type { PropType } from "vue";
-
-export interface Chapter {
-  id: string;
-  title: string;
-}
-
-export interface ChapterGroup {
-  name: string;
-  chapters: Chapter[];
-}
+import type { Chapter, ChapterGroup } from "./type";
 
 defineOptions({
   name: "catalog-panel"

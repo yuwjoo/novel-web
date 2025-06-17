@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from "vue";
-import { IBookPagePage } from "./book-page.vue";
+import type { PropType } from "vue";
+import type { BookPagePage } from "./book-page.vue";
 
 defineOptions({
   name: "book-page-scroll"
@@ -22,7 +22,7 @@ defineOptions({
 defineProps({
   // 数据
   pages: {
-    type: Array as PropType<IBookPagePage[]>
+    type: Array as PropType<BookPagePage[]>
   }
 });
 

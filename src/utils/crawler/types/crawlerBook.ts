@@ -50,8 +50,8 @@ export interface CrawlerBookClassify {
 /**
  * meta
  */
-export interface CrawlerBookMeta {
-  name: string; // 名称
+export interface CrawlerBookMeta<T = string> {
+  name: T; // 名称
   title: string; // 标题
   link: string; // 链接
 }

@@ -27,12 +27,12 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from "@/router";
-import { getBookContent, getBookChapterList } from "@/api/book";
+import { getBookContent, getBookAllChapterList } from "@/api/book";
 import BookItem from "./components/book-item.vue";
 import SettingBtn from "./components/setting-btn.vue";
-import type { Chapter } from "@/components/catalog-panel.vue";
-import { useBookReadSetting } from "@/store/bookReadSetting";
-import { IApiGetBookChapterListResult, IApiGetBookContentResult } from "@/api/type";
+import type { ApiGetBookContentResult, ApiGetBookAllChapterListResult } from "@/api/types/book";
+import type { Chapter } from "@/components/catalog-panel/type";
+import { useBook } from "@/store/book";
 
 defineOptions({
   name: "book-read"
@@ -41,13 +41,13 @@ defineOptions({
 const route = useRoute();
 const router = useRouter();
 
-const bookReadSetting = useBookReadSetting();
+const bookStore = useBook();
 
 const bookReadRef = useTemplateRef("bookReadRef");
 
-const list = ref<IApiGetBookContentResult[]>([]); // 列表数据
+const list = ref<ApiGetBookContentResult[]>([]); // 列表数据
 const loading = ref(false); // 加载中
-const chapters = ref<IApiGetBookChapterListResult>([]); // 章节数据
+const chapters = ref<ApiGetBookAllChapterListResult>([]); // 章节数据
 const nextChapterId = computed(() => list.value[list.value.length - 1].nextChapterId); // 下一章id
 
 const showCatalogPlan = ref(false); // 显示章节面板
@@ -85,7 +85,7 @@ const getList = async (chapterId: string) => {
  * @description: 获取章节数据
  */
 const getChapterData = async () => {
-  chapters.value = await getBookChapterList({ id: route.query.id as string });
+  chapters.value = await getBookAllChapterList({ id: route.query.id as string });
 };
 
 /**
@@ -114,13 +114,10 @@ getChapterData();
 onMounted(() => {
   watchEffect(() => {
     if (!bookReadRef.value) return;
-    const currentMode = bookReadSetting.currentMode;
+    const currentMode = bookStore.currentMode;
     bookReadRef.value.style.setProperty("--book-read-bg", currentMode.bg);
     bookReadRef.value.style.setProperty("--book-read-color", currentMode.color);
-    bookReadRef.value.style.setProperty(
-      "--book-read-title-color",
-      bookReadSetting.settings.isNight ? currentMode.color : ""
-    );
+    bookReadRef.value.style.setProperty("--book-read-title-color", bookStore.settings.isNight ? currentMode.color : "");
     bookReadRef.value.style.setProperty("--book-read-font-size-scale", currentMode.fontSizeScale + "px");
   });
 });

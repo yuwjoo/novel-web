@@ -1,41 +1,52 @@
-import { useCrawler } from "@/crawler";
-import { useBookPlatform } from "@/store/bookPlatform";
+import { useBook } from "@/store/book";
+import { crawlers } from "@/utils/crawler";
 import type {
-  IApiSearchBookParams,
-  IApiSearchBookResult,
-  IApiGetBookClassifyListResult,
-  IApiGetBookListParams,
-  IApiGetBookListResult,
-  IApiGetBookDetailParams,
-  IApiGetBookDetailResult,
-  IApiGetBookChapterListParams,
-  IApiGetBookChapterListResult,
-  IApiGetBookContentParams,
-  IApiGetBookContentResult
-} from "./type";
+  ApiSearchBookParams,
+  ApiSearchBookResult,
+  ApiGetBookClassifyListResult,
+  ApiGetBookListParams,
+  ApiGetBookListResult,
+  ApiGetBookDetailParams,
+  ApiGetBookDetailResult,
+  ApiGetBookAllChapterListParams,
+  ApiGetBookAllChapterListResult,
+  ApiGetBookContentParams,
+  ApiGetBookContentResult
+} from "./types/book";
 
-const bookPlatform = useBookPlatform();
+const bookStore = useBook();
 
-export function searchBook(params: IApiSearchBookParams): Promise<IApiSearchBookResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].search(params);
+const currentBookCrawler = computed(() => {
+  switch (bookStore.bookPlatform.current) {
+    case crawlers.lengku8.meta.name:
+      return crawlers.lengku8;
+    case crawlers.tbxsw.meta.name:
+      return crawlers.tbxsw;
+    default:
+      return crawlers.lengku8;
+  }
+});
+
+export function searchBook(params: ApiSearchBookParams): Promise<ApiSearchBookResult> {
+  return currentBookCrawler.value.search(params);
 }
 
-export function getBookClassifyList(): Promise<IApiGetBookClassifyListResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].getClassifyList();
+export function getBookClassifyList(): Promise<ApiGetBookClassifyListResult> {
+  return currentBookCrawler.value.getClassifyList();
 }
 
-export function getBookList(params: IApiGetBookListParams): Promise<IApiGetBookListResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].getList(params);
+export function getBookList(params: ApiGetBookListParams): Promise<ApiGetBookListResult> {
+  return currentBookCrawler.value.getList(params);
 }
 
-export function getBookDetail(params: IApiGetBookDetailParams): Promise<IApiGetBookDetailResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].getDetail(params);
+export function getBookDetail(params: ApiGetBookDetailParams): Promise<ApiGetBookDetailResult> {
+  return currentBookCrawler.value.getDetail(params);
 }
 
-export function getBookChapterList(params: IApiGetBookChapterListParams): Promise<IApiGetBookChapterListResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].getChapterList(params);
+export function getBookAllChapterList(params: ApiGetBookAllChapterListParams): Promise<ApiGetBookAllChapterListResult> {
+  return currentBookCrawler.value.getAllChapterList(params);
 }
 
-export function getBookContent(params: IApiGetBookContentParams): Promise<IApiGetBookContentResult> {
-  return useCrawler().books[bookPlatform.currentPlatformKey].getBookContent(params);
+export function getBookContent(params: ApiGetBookContentParams): Promise<ApiGetBookContentResult> {
+  return currentBookCrawler.value.getBookContent(params);
 }

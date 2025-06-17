@@ -2,7 +2,7 @@
   <div class="layout-main">
     <menu-navbar v-show="route.meta.main" class="layout-main__header" />
     <div class="layout-main__content">
-      <router-view v-slot="{ Component }" :key="bookPlatform.currentPlatformKey">
+      <router-view v-slot="{ Component }" :key="bookPlatform.current">
         <keep-alive :include="routerStore.keepAliveList">
           <component :is="Component" />
         </keep-alive>
@@ -16,8 +16,9 @@
 import MenuNavbar from "@/layout/components/menu-navbar.vue";
 import MenuTabbar from "@/layout/components/menu-tabbar.vue";
 import { useRoute } from "@/router";
-import { useBookPlatform } from "@/store/bookPlatform";
+import { useBook } from "@/store/book";
 import { useRouterStore } from "@/store/router";
+import { storeToRefs } from "pinia";
 
 defineOptions({
   name: "layout-main"
@@ -26,7 +27,7 @@ defineOptions({
 const route = useRoute();
 
 const routerStore = useRouterStore();
-const bookPlatform = useBookPlatform();
+const { bookPlatform } = storeToRefs(useBook());
 </script>
 
 <style lang="scss" scoped>

@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useRouter } from "@/router";
 import type { PropType } from "vue";
-import { BookListItem } from "../book-city.vue";
+import type { BookListItem } from "../types/book-city";
 
 defineOptions({
   name: "book-item"

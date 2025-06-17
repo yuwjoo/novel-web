@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { searchBook } from "@/api/book";
 import BookItem from "./components/book-item.vue";
-import { IApiSearchBookResult } from "@/api/type";
+import type { ApiSearchBookResult } from "@/api/types/book";
 
 defineOptions({
   name: "book-search"
@@ -33,7 +33,7 @@ const page = reactive({
   total: 0
 });
 const loading = ref(false);
-const list = ref<IApiSearchBookResult["list"]>([]);
+const list = ref<ApiSearchBookResult["list"]>([]);
 
 /**
  * @description: 处理模糊查询

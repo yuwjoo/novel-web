@@ -46,10 +46,7 @@
 import type { DropdownItemOption } from "vant";
 import BookItem from "./components/book-item.vue";
 import { getBookList, getBookClassifyList } from "@/api/book";
-import { IApiGetBookListResult } from "@/api/type";
-import { IPage } from "@/types/page";
-
-export type BookListItem = IApiGetBookListResult["list"][0] & { page: IPage & { index: number } };
+import type { BookListItem } from "./types/book-city";
 
 defineOptions({
   name: "book-city"
@@ -99,10 +96,7 @@ const getList = async () => {
     page.size = res.size;
     list.value.push(
       ...res.list.map((item, index) => {
-        return {
-          ...item,
-          page: { ...page, index }
-        };
+        return { ...item, page, index };
       })
     );
   } finally {
