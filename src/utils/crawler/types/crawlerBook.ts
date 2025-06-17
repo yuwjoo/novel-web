@@ -99,6 +99,21 @@ export interface CrawlerBookGetDetailParams {
  */
 export interface CrawlerBookGetChapterListParams {
   id: CrawlerBookBook["id"]; // id
+  current: CrawlerBookPage["current"]; // 当前页
+}
+
+/**
+ * 获取小说章节列表结果
+ */
+export interface CrawlerBookGetChapterListResult extends CrawlerBookPage {
+  list: CrawlerBookChapter[]; // 章节列表
+}
+
+/**
+ * 获取完整小说章节列表参数
+ */
+export interface CrawlerBookAllGetChapterListParams {
+  id: CrawlerBookBook["id"]; // id
 }
 
 /**
