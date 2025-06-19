@@ -88,32 +88,68 @@ request({
 //   source.cancel("3333");
 // }, 2000);
 
-interface AndroidBridgeApiFun<TData = any> {
-  (data: TData, options?: AndroidBridgeApiFunOptions): AndroidBridgeApiFunReturn;
+interface BridgeApiFun<TData = unknown, TResult = unknown, TOn = unknown, TSend = unknown> {
+  (data: TData, options?: BridgeApiFunOptions): BridgeApiFunHandler<TResult, TOn, TSend>;
 }
 
-interface AndroidBridgeApiFunOptions {
-  receive: Record<"done" | string, (result: unknown) => void>;
+interface BridgeApiFunOptions {
+  timeout?: number;
 }
 
-interface AndroidBridgeApiFunReturn {
-  promise: Promise<any>;
-  send: (name: string, data?: any) => void;
-  done: (name: string, data?: any) => void;
+interface BridgeApiFunHandler<TResult = unknown, TOn = unknown, TSend = unknown> {
+  promise: Promise<TResult>;
+  on: BridgeApiFunHandlerOn<TOn>;
+  send: BridgeApiFunHandlerSend<TSend>;
+  done: BridgeApiFunHandlerDone<TSend>;
 }
 
-interface AndroidBridgeApi {
-  request: (data: AndroidBridgeApiRequestData, options?: AndroidBridgeApiFunOptions) => AndroidBridgeApiFunReturn;
+interface BridgeApiFunHandlerOn<T = unknown> {
+  <K extends keyof T>(name: K, callback: (result: T[K]) => void): void;
 }
 
-interface AndroidBridgeApiRequestData {
+interface BridgeApiFunHandlerSend<T = unknown> {
+  <K extends keyof T>(name: K, data?: T[K]): void;
+}
+
+interface BridgeApiFunHandlerDone<T = unknown> {
+  <K extends keyof T>(name?: K, data?: T[K]): void;
+}
+
+interface RequestData {
   url: string;
   method: string;
 }
 
-interface AndroidBridgeApiRequestReceive {
-  done: (result: string) => void;
-  error: (result: number) => void;
+interface RequestOnEvent {
+  uploadProgress: {
+    loaded: number; // 当前数据量
+    total: number; // 总数据量
+    lengthComputable: boolean; // 进度是否可以被测量
+  };
+  downloadProgress: {
+    loaded: number; // 当前数据量
+    total: number; // 总数据量
+    lengthComputable: boolean; // 进度是否可以被测量
+  };
+  response: {
+    status: number; // 状态码
+    statusText: string; // 状态文本
+    headers: Record<string, string>; // 响应头集合
+    body: string; // body数据
+    url: string; // 响应url
+  };
+  error: {
+    type: "error"; // 类型
+    data: "timeout" | "other"; // 失败类型
+  };
+}
+
+interface RequestSendEvent {
+  cancelRequest: undefined;
+}
+
+interface BridgeApi {
+  request: BridgeApiFun<RequestData, RequestOnEvent["response"], RequestOnEvent, RequestSendEvent>;
 }
 
 interface TargetObject {
@@ -143,10 +179,16 @@ const handler = {
   }
 };
 
-const bridge: AndroidBridgeApi = new Proxy<any>(createTarget([]), handler);
+const bridgeApi: BridgeApi = new Proxy<any>(createTarget([]), handler);
 
 console.time();
-const res = bridge.request({ url: "33", method: "11" });
+const res = bridgeApi.request({
+  url: "",
+  method: ""
+});
+res.on("response", (result) => {
+  console.log(result);
+});
 console.timeEnd();
 </script>
 
