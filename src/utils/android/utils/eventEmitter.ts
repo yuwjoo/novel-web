@@ -1,6 +1,8 @@
-import type { EventCallback } from "../types/eventEmitter";
+interface EventCallback<T extends any[]> {
+  (...arg: T): void;
+}
 
-export class EventEmitter<TEvents extends Record<string, any[]> = any> {
+export class EventEmitter<TEvents extends Record<any, any[]> = Record<any, any[]>> {
   private events: Map<keyof TEvents, Set<EventCallback<any[]>>> = new Map();
 
   /**
@@ -8,7 +10,10 @@ export class EventEmitter<TEvents extends Record<string, any[]> = any> {
    * @param {TEventName} eventName 事件名称
    * @param {EventCallback<TEvents[TEventName]>} callback 回调函数
    */
-  on<TEventName extends keyof TEvents>(eventName: TEventName, callback: EventCallback<TEvents[TEventName]>): void {
+  public on<TEventName extends keyof TEvents>(
+    eventName: TEventName,
+    callback: EventCallback<TEvents[TEventName]>
+  ): void {
     if (!this.events.has(eventName)) {
       this.events.set(eventName, new Set());
     }
@@ -20,7 +25,10 @@ export class EventEmitter<TEvents extends Record<string, any[]> = any> {
    * @param {TEventName} eventName 事件名称
    * @param {EventCallback<TEvents[TEventName]>} callback 回调函数
    */
-  off<TEventName extends keyof TEvents>(eventName: TEventName, callback: EventCallback<TEvents[TEventName]>): void {
+  public off<TEventName extends keyof TEvents>(
+    eventName: TEventName,
+    callback: EventCallback<TEvents[TEventName]>
+  ): void {
     const callbacks = this.events.get(eventName);
     if (callbacks) {
       callbacks.delete(callback);
@@ -35,7 +43,10 @@ export class EventEmitter<TEvents extends Record<string, any[]> = any> {
    * @param {TEventName} eventName 事件名称
    * @param {EventCallback<TEvents[TEventName]>} callback 回调函数
    */
-  only<TEventName extends keyof TEvents>(eventName: TEventName, callback: EventCallback<TEvents[TEventName]>): void {
+  public only<TEventName extends keyof TEvents>(
+    eventName: TEventName,
+    callback: EventCallback<TEvents[TEventName]>
+  ): void {
     const onceWrapper = (...arg: TEvents[TEventName]) => {
       callback(...arg);
       this.off(eventName, onceWrapper);
@@ -44,11 +55,11 @@ export class EventEmitter<TEvents extends Record<string, any[]> = any> {
   }
 
   /**
-   * @description: 触发事件（内部使用）
+   * @description: 触发事件
    * @param {TEventName} eventName 事件名称
    * @param {TEvents[TEventName]} arg 调用参数
    */
-  protected _emit<TEventName extends keyof TEvents>(eventName: TEventName, ...arg: TEvents[TEventName]): void {
+  public emit<TEventName extends keyof TEvents>(eventName: TEventName, ...arg: TEvents[TEventName]): void {
     const callbacks = this.events.get(eventName);
     if (callbacks) {
       callbacks.forEach((cb) => cb(...arg));
