@@ -3,7 +3,7 @@ interface EventCallback<T extends any[]> {
 }
 
 export class EventEmitter<TEvents extends Record<any, any[]> = Record<any, any[]>> {
-  private events: Map<keyof TEvents, Set<EventCallback<any[]>>> = new Map();
+  protected events: Map<keyof TEvents, Set<EventCallback<any[]>>> = new Map();
 
   /**
    * @description: 监听事件

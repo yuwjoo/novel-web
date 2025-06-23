@@ -51,11 +51,11 @@ export interface CallAndroidMessage<T = any> {
   name?: string; // 事件名称
   data?: T; // 数据
   isDone?: boolean; // 是否结束
-  isFail?: boolean; // 是否为失败响应
+  isFail?: boolean; // 是否响应为失败
 }
 
 export interface AndroidInterface {
-  call: (data: AndroidInterfaceCallData) => void;
+  callMethod: (data: AndroidInterfaceCallData) => void;
 }
 
 export interface AndroidInterfaceCallData {
