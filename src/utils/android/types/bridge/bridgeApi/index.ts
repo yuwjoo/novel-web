@@ -1,4 +1,4 @@
-import type { RequestData, RequestOnEvent, RequestResult, RequestSendEvent } from "./bridgeApi/request";
+import type { RequestData, RequestOnEvent, RequestResult, RequestSendEvent } from "./request";
 
 export interface BridgeApi {
   request: BridgeApiFun<RequestData, RequestResult, RequestOnEvent, RequestSendEvent>;
@@ -46,25 +46,6 @@ export interface BridgeApiFunHandlerDone<T extends Record<string, any> = Record<
   <K extends keyof T>(name?: K, data?: T[K]): void;
 }
 
-export interface CallAndroidMessage<T = any> {
-  id: string; // 通道id
-  name?: string; // 事件名称
-  data?: T; // 数据
-  isDone?: boolean; // 是否结束
-  isFail?: boolean; // 是否响应为失败
-}
-
-export interface AndroidInterface {
-  callMethod: (data: AndroidInterfaceCallData) => void;
-}
-
-export interface AndroidInterfaceCallData {
-  id: string; // 通道id
-  callMethodPath: string[]; // 调用方法路径
-  data: any; // 数据
-  timeout?: number; // 超时时间
-}
-
-export interface TargetObject {
+export interface BridgeApiTargetObject {
   keys: string[];
 }

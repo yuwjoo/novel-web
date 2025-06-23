@@ -3,7 +3,10 @@ import type {
   AndroidInterfaceCallData,
   BridgeApi,
   BridgeApiFunHandler,
+  BridgeApiFunHandlerDone,
+  BridgeApiFunHandlerOn,
   BridgeApiFunHandlerOnCallback,
+  BridgeApiFunHandlerSend,
   BridgeApiFunOptions,
   CallAndroidMessage,
   TargetObject
@@ -75,7 +78,7 @@ class BridgeInterfaceForAndroid {
    * @description: android接口对象
    * @return {AndroidInterface} 接口对象
    */
-  private get androidInterface(): AndroidInterface {
+  private get androidInterface(): AndroidInterface | undefined {
     return window[ANDROID_INTERFACE_KEY];
   }
 
@@ -92,7 +95,7 @@ class BridgeInterfaceForAndroid {
    * @param {AndroidInterfaceCallData} data 发送数据
    */
   public call(data: AndroidInterfaceCallData) {
-    this.androidInterface.call(data);
+    this.androidInterface!.call(data);
   }
 }
 
@@ -137,6 +140,35 @@ class BridgeInterfaceForWeb {
 const bridgeInterfaceForAndroid = new BridgeInterfaceForAndroid();
 
 BridgeInterfaceForWeb.mount();
+
+class BridgeApiHandler implements BridgeApiFunHandler {
+  private channel: Channel | undefined;
+  private _promise: Promise<void> | undefined;
+
+  constructor(channel: Channel | undefined) {
+    this.channel = channel;
+  }
+
+  public get promise(): Promise<void> {
+    if (this.channel === undefined) {
+      this._promise = this._promise || Promise.reject(new Error("Channel not found"));
+    } else if (this._promise === undefined) {
+      this._promise = new Promise<any>((resolve, reject) => {
+        this.channel!.on(SUCCESS_CALLBACK_KEY, resolve);
+        this.channel!.on(FAIL_CALLBACK_KEY, reject);
+      });
+    }
+    return this._promise;
+  }
+
+  on: BridgeApiFunHandlerOn<Record<string, any>>;
+
+  off: BridgeApiFunHandlerOn<Record<string, any>>;
+
+  send: BridgeApiFunHandlerSend<Record<string, any>>;
+
+  done: BridgeApiFunHandlerDone<Record<string, any>>;
+}
 
 /**
  * @description: 生成随机id

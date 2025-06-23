@@ -1,4 +1,4 @@
-import type { TriggerEventOptions } from "../../types/bridge/bridgeInterfaceForWeb";
+import type { WebTriggerEventOptions } from "../../types/bridge/bridgeInterfaceForWeb";
 import { channelMap } from "./channel";
 import { WEB_INTERFACE_KEY, REJECT_CALLBACK_KEY, RESOLVE_CALLBACK_KEY } from "./constant";
 
@@ -9,10 +9,9 @@ class BridgeInterfaceForWeb {
 
   /**
    * @description: 触发事件
-   * @param {string} message 消息
+   * @param {WebTriggerEventOptions} options 选项
    */
-  triggerEvent(message: string) {
-    const options: TriggerEventOptions = JSON.parse(message);
+  public triggerEvent(options: WebTriggerEventOptions) {
     const channel = channelMap.get(options.id);
     if (channel === undefined) return;
     if (options.name) {
@@ -28,8 +27,8 @@ class BridgeInterfaceForWeb {
    * @description: 抛出异常
    * @param {string} message 消息
    */
-  throwError(message: string) {
-    throw new Error(message);
+  public throwError(message: string) {
+    console.error(message);
   }
 }
 

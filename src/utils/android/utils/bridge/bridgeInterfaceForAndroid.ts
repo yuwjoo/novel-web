@@ -1,5 +1,9 @@
-import type { AndroidInterface, AndroidInterfaceCallData } from "../../types/bridge";
-import { ANDROID_INTERFACE_KEY } from "./store";
+import type {
+  AndroidInterface,
+  AndroidCallMethodOptions,
+  AndroidTriggerEventOptions
+} from "../../types/bridge/bridgeInterfaceForAndroid";
+import { ANDROID_INTERFACE_KEY } from "./constant";
 
 class BridgeInterfaceForAndroid {
   /**
@@ -20,10 +24,26 @@ class BridgeInterfaceForAndroid {
 
   /**
    * @description: 调用方法
-   * @param {AndroidInterfaceCallData} data 发送数据
+   * @param {AndroidCallMethodOptions} data 发送数据
    */
-  public callMethod(data: AndroidInterfaceCallData) {
+  public callMethod(data: AndroidCallMethodOptions) {
     this.androidInterface.callMethod(data);
+  }
+
+  /**
+   * @description: 触发事件
+   * @param {AndroidTriggerEventOptions} options 消息
+   */
+  public triggerEvent(options: AndroidTriggerEventOptions) {
+    this.androidInterface.triggerEvent(options);
+  }
+
+  /**
+   * @description: 抛出异常
+   * @param {string} message 消息
+   */
+  public throwError(message: string) {
+    this.androidInterface.throwError(message);
   }
 }
 
