@@ -10,7 +10,7 @@ class BridgeInterfaceForAndroid {
    * @description: android接口对象
    * @return {AndroidInterface} 接口对象
    */
-  private get androidInterface(): AndroidInterface {
+  private get androidInterface(): AndroidInterface | undefined {
     return window[ANDROID_INTERFACE_KEY];
   }
 
@@ -27,7 +27,7 @@ class BridgeInterfaceForAndroid {
    * @param {AndroidCallMethodOptions} data 发送数据
    */
   public callMethod(data: AndroidCallMethodOptions) {
-    this.androidInterface.callMethod(data);
+    this.androidInterface?.callMethod(data);
   }
 
   /**
@@ -35,7 +35,7 @@ class BridgeInterfaceForAndroid {
    * @param {AndroidTriggerEventOptions} options 消息
    */
   public triggerEvent(options: AndroidTriggerEventOptions) {
-    this.androidInterface.triggerEvent(options);
+    this.androidInterface?.triggerEvent(options);
   }
 
   /**
@@ -43,7 +43,14 @@ class BridgeInterfaceForAndroid {
    * @param {string} message 消息
    */
   public throwError(message: string) {
-    this.androidInterface.throwError(message);
+    this.androidInterface?.throwError(message);
+  }
+
+  /**
+   * @description: 重新构建
+   */
+  public rebuild() {
+    this.androidInterface?.rebuild();
   }
 }
 

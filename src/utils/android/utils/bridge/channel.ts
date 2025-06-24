@@ -1,5 +1,10 @@
 import { EventEmitter } from "../eventEmitter";
 
-export const channelMap: Map<string, Channel> = new Map(); // 通道map
+export class Channel extends EventEmitter {
+  public readonly id: string; // 通道id
 
-export class Channel extends EventEmitter {}
+  constructor(id: string) {
+    super();
+    this.id = id;
+  }
+}

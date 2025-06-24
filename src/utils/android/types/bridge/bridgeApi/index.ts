@@ -10,39 +10,39 @@ export interface BridgeApiFun<
   TOn extends Record<string, any> = Record<string, any>,
   TSend extends Record<string, any> = Record<string, any>
 > {
-  (data: TData, options?: BridgeApiFunOptions): BridgeApiFunHandler<TResult, TOn, TSend>;
+  (data: TData, options?: BridgeApiOptions): BridgeApiHandler<TResult, TOn, TSend>;
 }
 
-export interface BridgeApiFunOptions {
-  timeout?: number; // 超时时间，该时间内对方无响应则断开连接
+export interface BridgeApiOptions {
   noChannelMode?: boolean; // 无通道模式
 }
 
-export interface BridgeApiFunHandler<
+export interface BridgeApiHandler<
   TResult = void,
   TOn extends Record<string, any> = Record<string, any>,
   TSend extends Record<string, any> = Record<string, any>
 > {
   promise: Promise<TResult>;
-  on: BridgeApiFunHandlerOn<TOn>;
-  off: BridgeApiFunHandlerOn<TOn>;
-  send: BridgeApiFunHandlerSend<TSend>;
-  done: BridgeApiFunHandlerDone<TSend>;
+  on: BridgeApiHandlerOn<TOn>;
+  only: BridgeApiHandlerOn<TOn>;
+  off: BridgeApiHandlerOn<TOn>;
+  send: BridgeApiHandlerSend<TSend>;
+  done: BridgeApiHandlerDone<TSend>;
 }
 
-export interface BridgeApiFunHandlerOn<T extends Record<string, any> = Record<string, any>> {
-  <K extends keyof T>(name: K, callback: BridgeApiFunHandlerOnCallback<T[K]>): void;
+export interface BridgeApiHandlerOn<T extends Record<string, any> = Record<string, any>> {
+  <K extends keyof T>(name: K, callback: BridgeApiHandlerOnCallback<T[K]>): void;
 }
 
-export interface BridgeApiFunHandlerOnCallback<T = unknown> {
+export interface BridgeApiHandlerOnCallback<T = unknown> {
   (result: T): void;
 }
 
-export interface BridgeApiFunHandlerSend<T extends Record<string, any> = Record<string, any>> {
+export interface BridgeApiHandlerSend<T extends Record<string, any> = Record<string, any>> {
   <K extends keyof T>(name: K, data?: T[K]): void;
 }
 
-export interface BridgeApiFunHandlerDone<T extends Record<string, any> = Record<string, any>> {
+export interface BridgeApiHandlerDone<T extends Record<string, any> = Record<string, any>> {
   <K extends keyof T>(name?: K, data?: T[K]): void;
 }
 

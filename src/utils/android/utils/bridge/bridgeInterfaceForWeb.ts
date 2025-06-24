@@ -1,5 +1,5 @@
 import type { WebTriggerEventOptions } from "../../types/bridge/bridgeInterfaceForWeb";
-import { channelMap } from "./channel";
+import { channelStore } from "./channelStore";
 import { WEB_INTERFACE_KEY, REJECT_CALLBACK_KEY, RESOLVE_CALLBACK_KEY } from "./constant";
 
 class BridgeInterfaceForWeb {
@@ -12,14 +12,14 @@ class BridgeInterfaceForWeb {
    * @param {WebTriggerEventOptions} options 选项
    */
   public triggerEvent(options: WebTriggerEventOptions) {
-    const channel = channelMap.get(options.id);
+    const channel = channelStore.get(options.id);
     if (channel === undefined) return;
     if (options.name) {
       channel.emit(options.name, options.data);
     }
     if (options.isDone) {
       channel.emit(options.isReject ? REJECT_CALLBACK_KEY : RESOLVE_CALLBACK_KEY, options.data);
-      channelMap.delete(options.id);
+      channelStore.delete(options.id);
     }
   }
 

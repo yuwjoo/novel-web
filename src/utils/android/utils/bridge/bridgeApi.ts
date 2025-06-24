@@ -1,21 +1,88 @@
 import type {
   BridgeApi,
-  BridgeApiFunHandler,
-  BridgeApiFunOptions,
+  BridgeApiHandler,
+  BridgeApiHandlerDone,
+  BridgeApiHandlerOn,
+  BridgeApiHandlerSend,
+  BridgeApiOptions,
   BridgeApiTargetObject
 } from "../../types/bridge/bridgeApi";
 import { bridgeInterfaceForAndroid } from "./bridgeInterfaceForAndroid";
-import { Channel, channelMap } from "./channel";
+import { Channel } from "./channel";
+import { channelStore } from "./channelStore";
 import { REJECT_CALLBACK_KEY, RESOLVE_CALLBACK_KEY } from "./constant";
+import { generateId } from "./utils";
+
+class ApiHandler implements BridgeApiHandler {
+  #channel: Channel | undefined; // 缓存的通道
+  #promise: Promise<any> | undefined; // 缓存的Promise
+
+  constructor(channel?: Channel) {
+    this.#channel = channel;
+  }
+
+  /**
+   * @description: Promise对象
+   */
+  public get promise(): Promise<any> {
+    if (this.#promise === undefined) {
+      this.#promise = new Promise((resolve, reject) => {
+        if (this.#channel === undefined) {
+          reject("channel not found");
+        } else {
+          this.#channel.on(RESOLVE_CALLBACK_KEY, resolve);
+          this.#channel.on(REJECT_CALLBACK_KEY, reject);
+        }
+      });
+    }
+    return this.#promise;
+  }
+
+  /**
+   * @description: 监听事件
+   */
+  public on: BridgeApiHandlerOn = (name, callback) => {
+    if (this.#channel === undefined) return;
+    this.#channel.on(name, callback);
+  };
+
+  /**
+   * @description: 监听一次性事件
+   */
+  public only: BridgeApiHandlerOn = (name, callback) => {
+    if (this.#channel === undefined) return;
+    this.#channel.only(name, callback);
+  };
+
+  /**
+   * @description: 关闭事件
+   */
+  public off: BridgeApiHandlerOn = (name, callback) => {
+    if (this.#channel === undefined) return;
+    this.#channel.off(name, callback);
+  };
+
+  /**
+   * @description: 发送事件
+   */
+  public send: BridgeApiHandlerSend = (name, data) => {
+    if (this.#channel === undefined) return;
+    bridgeInterfaceForAndroid.triggerEvent({ id: this.#channel.id, name, data });
+  };
+
+  /**
+   * @description: 发送结束事件
+   */
+  public done: BridgeApiHandlerDone = (name, data) => {
+    if (this.#channel === undefined) return;
+    bridgeInterfaceForAndroid.triggerEvent({ id: this.#channel.id, name, data });
+  };
+}
 
 /**
- * @description: 生成随机id
- * @return {string} id
+ * @description: 创建代理目标对象
+ * @return {BridgeApiTargetObject} 代理目标对象
  */
-const generateId = (): string => {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-};
-
 const createTarget = (keys: string[]): BridgeApiTargetObject => {
   const target = () => {
     /** empty */
@@ -24,45 +91,28 @@ const createTarget = (keys: string[]): BridgeApiTargetObject => {
   return target;
 };
 
+/**
+ * @description: 代理处理对象
+ */
 const handler = {
   get(target: BridgeApiTargetObject, prop: string): BridgeApiTargetObject {
     return new Proxy(createTarget([...target.keys, prop]), handler);
   },
-  apply(
-    target: BridgeApiTargetObject,
-    _thisArg: BridgeApiTargetObject,
-    [data, options]: [any, BridgeApiFunOptions | undefined]
-  ): BridgeApiFunHandler {
+  apply(target: BridgeApiTargetObject, _thisArg: any, [data, options]: [any, BridgeApiOptions]): BridgeApiHandler {
     if (!bridgeInterfaceForAndroid.available) {
-      throw new Error("android bridge is not available");
+      console.error("android bridge is not available");
+      return new ApiHandler();
     }
     const id = generateId();
-    let channel: Channel | undefined;
-    let promise: Promise<any> | undefined;
+    const channel = options?.noChannelMode ? undefined : channelStore.add(id);
+
     bridgeInterfaceForAndroid.callMethod({
       id,
       callMethodPath: target.keys,
       data
     });
-    if (!options?.noChannelMode) {
-      channel = new Channel();
-      channelMap.set(id, channel);
-    }
-    return Object.create(null, {
-      promise: {
-        get() {
-          if (channel === undefined) {
-            promise = promise || Promise.reject(new Error("Channel not found"));
-          } else if (promise === undefined) {
-            promise = new Promise((resolve, reject) => {
-              channel.on(RESOLVE_CALLBACK_KEY, resolve);
-              channel.on(REJECT_CALLBACK_KEY, reject);
-            });
-          }
-          return promise;
-        }
-      }
-    });
+
+    return new ApiHandler(channel);
   }
 };
 

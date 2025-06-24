@@ -32,10 +32,10 @@ export interface RequestResult {
 }
 
 export interface RequestOnEvent {
-  uploadProgress: ProgressEventData;
-  downloadProgress: ProgressEventData;
-  response: RequestResult;
-  error: ErrorEventData;
+  uploadProgress: ProgressEventData; // 上传进度
+  downloadProgress: ProgressEventData; // 下传进度
+  response: RequestResult; // 响应
+  error: ErrorEventData; // 异常
 }
 
 export interface ProgressEventData {
@@ -44,7 +44,7 @@ export interface ProgressEventData {
   lengthComputable: boolean; // 进度是否可以被测量
 }
 
-export type ErrorEventData = "timeout" | "other";
+export type ErrorEventData = "timeout" | "other"; // 异常信息
 
 export interface RequestSendEvent {
   cancel: undefined; // 取消请求
