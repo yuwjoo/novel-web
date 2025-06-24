@@ -6,7 +6,7 @@ export interface AndroidInterface {
 }
 
 export interface AndroidCallMethodOptions {
-  id: string; // 通道id
+  id?: string; // 通道id
   callMethodPath: string[]; // 调用方法路径
   data: any; // 数据
 }

@@ -107,7 +107,8 @@ const handler = {
       console.error("android bridge is not available");
       return emptyApiHandler;
     }
-    const id = generateId();
+    const id = options?.noChannelMode ? undefined : generateId();
+    const apiHandler = id ? new ApiHandler(channelStore.add(id)) : emptyApiHandler;
 
     bridgeInterfaceForAndroid.callMethod({
       id,
@@ -115,7 +116,7 @@ const handler = {
       data
     });
 
-    return options?.noChannelMode ? emptyApiHandler : new ApiHandler(channelStore.add(id));
+    return apiHandler;
   }
 };
 
