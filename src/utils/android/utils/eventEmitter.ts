@@ -1,6 +1,4 @@
-interface EventCallback<T extends any[]> {
-  (...arg: T): void;
-}
+import type { EventCallback } from "../types/eventEmitter";
 
 export class EventEmitter<TEvents extends Record<any, any[]> = Record<any, any[]>> {
   protected events: Map<keyof TEvents, Set<EventCallback<any[]>>> = new Map();
