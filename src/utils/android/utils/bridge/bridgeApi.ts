@@ -81,6 +81,8 @@ class ApiHandler implements BridgeApiHandler {
   };
 }
 
+const emptyApiHandler = new ApiHandler();
+
 /**
  * @description: 创建代理目标对象
  * @return {BridgeApiTargetObject} 代理目标对象
@@ -103,10 +105,9 @@ const handler = {
   apply(target: BridgeApiTargetObject, _thisArg: any, [data, options]: [any, BridgeApiOptions]): BridgeApiHandler {
     if (!bridgeInterfaceForAndroid.available) {
       console.error("android bridge is not available");
-      return new ApiHandler();
+      return emptyApiHandler;
     }
     const id = generateId();
-    const channel = options?.noChannelMode ? undefined : channelStore.add(id);
 
     bridgeInterfaceForAndroid.callMethod({
       id,
@@ -114,7 +115,7 @@ const handler = {
       data
     });
 
-    return new ApiHandler(channel);
+    return options?.noChannelMode ? emptyApiHandler : new ApiHandler(channelStore.add(id));
   }
 };
 
