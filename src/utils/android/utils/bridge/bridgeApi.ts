@@ -41,7 +41,7 @@ class ApiHandler implements BridgeApiHandler {
   /**
    * @description: 监听事件
    */
-  public on: BridgeApiHandlerOn = (name, callback) => {
+  public readonly on: BridgeApiHandlerOn = (name, callback) => {
     if (this.#channel === undefined) return;
     this.#channel.on(name, callback);
   };
@@ -49,7 +49,7 @@ class ApiHandler implements BridgeApiHandler {
   /**
    * @description: 监听一次性事件
    */
-  public only: BridgeApiHandlerOn = (name, callback) => {
+  public readonly only: BridgeApiHandlerOn = (name, callback) => {
     if (this.#channel === undefined) return;
     this.#channel.only(name, callback);
   };
@@ -57,7 +57,7 @@ class ApiHandler implements BridgeApiHandler {
   /**
    * @description: 关闭事件
    */
-  public off: BridgeApiHandlerOn = (name, callback) => {
+  public readonly off: BridgeApiHandlerOn = (name, callback) => {
     if (this.#channel === undefined) return;
     this.#channel.off(name, callback);
   };
@@ -65,7 +65,7 @@ class ApiHandler implements BridgeApiHandler {
   /**
    * @description: 发送事件
    */
-  public send: BridgeApiHandlerSend = (name, data) => {
+  public readonly send: BridgeApiHandlerSend = (name, data) => {
     if (this.#channel === undefined) return;
     bridgeInterfaceForAndroid.triggerEvent({ id: this.#channel.id, name, data });
   };
@@ -73,9 +73,11 @@ class ApiHandler implements BridgeApiHandler {
   /**
    * @description: 发送结束事件
    */
-  public done: BridgeApiHandlerDone = (name, data) => {
+  public readonly done: BridgeApiHandlerDone = (name, data) => {
     if (this.#channel === undefined) return;
-    bridgeInterfaceForAndroid.triggerEvent({ id: this.#channel.id, name, data });
+    channelStore.delete(this.#channel.id);
+    bridgeInterfaceForAndroid.triggerEvent({ id: this.#channel.id, name, data, isDone: true });
+    this.#channel = undefined;
   };
 }
 
