@@ -31,7 +31,7 @@ export interface BridgeApiHandler<
 }
 
 export interface BridgeApiHandlerOn<T extends Record<string, any> = Record<string, any>> {
-  <K extends keyof T>(name: K, callback: BridgeApiHandlerOnCallback<T[K]>): void;
+  <K extends Extract<keyof T, string>>(name: K, callback: BridgeApiHandlerOnCallback<T[K]>): void;
 }
 
 export interface BridgeApiHandlerOnCallback<T = unknown> {
@@ -39,11 +39,11 @@ export interface BridgeApiHandlerOnCallback<T = unknown> {
 }
 
 export interface BridgeApiHandlerSend<T extends Record<string, any> = Record<string, any>> {
-  <K extends keyof T>(name: K, data?: T[K]): void;
+  <K extends Extract<keyof T, string>>(name: K, data?: T[K]): void;
 }
 
 export interface BridgeApiHandlerDone<T extends Record<string, any> = Record<string, any>> {
-  <K extends keyof T>(name?: K, data?: T[K]): void;
+  <K extends Extract<keyof T, string>>(name?: K, data?: T[K]): void;
 }
 
 export interface BridgeApiTargetObject {
