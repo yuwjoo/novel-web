@@ -77,6 +77,7 @@ export class Channel<OnEvent extends Record<PropertyKey, any> = any, SendEvent e
    * @description: 关闭通道
    */
   public readonly close = () => {
+    if (this.isClose) return;
     this.isClose = true;
     this.events.clear();
     this.onClose?.();
