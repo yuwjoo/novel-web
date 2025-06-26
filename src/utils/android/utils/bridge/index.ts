@@ -2,7 +2,8 @@ import { bridgeGlobal } from "./bridgeGlobal";
 import { bridgeInterfaceForAndroid } from "./bridgeInterfaceForAndroid";
 import "./bridgeInterfaceForWeb";
 
-export * from "./bridgeApi";
+export * from "./bridgeConfig";
+export * from "./bridgeEmitter";
 export * from "./bridgeGlobal";
 
 bridgeGlobal.send("ready"); // 发送Bridge就绪事件

@@ -1,48 +1,44 @@
-import type {
-  BridgeGlobalOnEvent,
-  BridgeGlobalOn,
-  BridgeGlobalSend,
-  BridgeGlobalSendEvent
-} from "../../types/bridge/bridgeGlobal";
+import type { BridgeGlobalOn, BridgeGlobalSend } from "../../types/bridge/bridgeGlobal";
 import { bridgeInterfaceForAndroid } from "./bridgeInterfaceForAndroid";
-import type { Channel } from "./channel";
+import { Channel } from "./channel";
 import { channelStore } from "./channelStore";
-import { GLOBAL_EVENT_CHANNEL_ID } from "./constant";
+import { bridgeConfig } from "./bridgeConfig";
 
-class BridgeGlobal<OnEvent extends Record<string, any>, SendEvent extends Record<string, any>> {
+class BridgeGlobal {
   private globalEventChannel: Channel; // 全局事件通道
 
   constructor() {
-    this.globalEventChannel = channelStore.add(GLOBAL_EVENT_CHANNEL_ID);
+    this.globalEventChannel = new Channel(bridgeConfig.GLOBAL_EVENT_CHANNEL_ID);
+    channelStore.add(this.globalEventChannel);
   }
 
   /**
    * @description: 监听事件
    */
-  public readonly on: BridgeGlobalOn<OnEvent> = (name, callback) => {
+  public readonly on: BridgeGlobalOn = (name, callback) => {
     this.globalEventChannel.on(name, callback);
   };
 
   /**
    * @description: 监听一次性事件
    */
-  public readonly only: BridgeGlobalOn<OnEvent> = (name, callback) => {
+  public readonly only: BridgeGlobalOn = (name, callback) => {
     this.globalEventChannel.only(name, callback);
   };
 
   /**
    * @description: 关闭事件
    */
-  public readonly off: BridgeGlobalOn<OnEvent> = (name, callback) => {
+  public readonly off: BridgeGlobalOn = (name, callback) => {
     this.globalEventChannel.off(name, callback);
   };
 
   /**
    * @description: 发送事件
    */
-  public readonly send: BridgeGlobalSend<SendEvent> = (name, data) => {
-    bridgeInterfaceForAndroid.triggerEvent({ id: GLOBAL_EVENT_CHANNEL_ID, name, data });
+  public readonly send: BridgeGlobalSend = (name, data) => {
+    bridgeInterfaceForAndroid.triggerEvent({ id: bridgeConfig.GLOBAL_EVENT_CHANNEL_ID, name, data });
   };
 }
 
-export const bridgeGlobal = new BridgeGlobal<BridgeGlobalOnEvent, BridgeGlobalSendEvent>();
+export const bridgeGlobal = new BridgeGlobal();

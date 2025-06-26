@@ -2,7 +2,7 @@ import type { IBridgeEmitterConnect, IBridgeEmitterInvoke, IBridgeEmitterSend } 
 import { bridgeInterfaceForAndroid } from "./bridgeInterfaceForAndroid";
 import { Channel } from "./channel";
 import { channelStore } from "./channelStore";
-import { RESOLVE_CALLBACK_KEY, REJECT_CALLBACK_KEY } from "./constant";
+import { bridgeConfig } from "./bridgeConfig";
 import { checkNotIsAndroidBridgeEnv, generateId } from "./utils";
 
 export class BridgeEmitter {
@@ -40,8 +40,8 @@ export class BridgeEmitter {
     channelStore.add(channel);
 
     return new Promise((resolve, reject) => {
-      channel.on(RESOLVE_CALLBACK_KEY, resolve as any);
-      channel.on(REJECT_CALLBACK_KEY, reject);
+      channel.on(bridgeConfig.RESOLVE_CALLBACK_KEY, resolve as any);
+      channel.on(bridgeConfig.REJECT_CALLBACK_KEY, reject);
     });
   };
 

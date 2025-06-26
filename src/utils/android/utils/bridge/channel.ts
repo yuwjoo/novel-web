@@ -1,7 +1,7 @@
 import type { IChannelSend, IChannelDone, IChannel, IChannelOn, IChannelEmit } from "../../types/bridge/channel";
 import { EventEmitter } from "../eventEmitter";
 import { bridgeInterfaceForAndroid } from "./bridgeInterfaceForAndroid";
-import { REJECT_CALLBACK_KEY, RESOLVE_CALLBACK_KEY } from "./constant";
+import { bridgeConfig } from "./bridgeConfig";
 
 export class Channel<OnEvent extends Record<PropertyKey, any> = any, SendEvent extends Record<string, any> = any>
   extends EventEmitter
@@ -46,7 +46,7 @@ export class Channel<OnEvent extends Record<PropertyKey, any> = any, SendEvent e
   public readonly emit: IChannelEmit<OnEvent> = (name, data) => {
     if (this.isDone) return;
     super.emit(name, data);
-    if (name === REJECT_CALLBACK_KEY || name === RESOLVE_CALLBACK_KEY) {
+    if (name === bridgeConfig.REJECT_CALLBACK_KEY || name === bridgeConfig.RESOLVE_CALLBACK_KEY) {
       this.isDone = true;
     }
   };

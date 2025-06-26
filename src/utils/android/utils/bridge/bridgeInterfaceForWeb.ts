@@ -1,10 +1,10 @@
 import type { WebTriggerEventOptions } from "../../types/bridge/bridgeInterfaceForWeb";
 import { channelStore } from "./channelStore";
-import { WEB_INTERFACE_KEY, REJECT_CALLBACK_KEY, RESOLVE_CALLBACK_KEY } from "./constant";
+import { bridgeConfig } from "./bridgeConfig";
 
 class BridgeInterfaceForWeb {
   constructor() {
-    window[WEB_INTERFACE_KEY] = this; // 挂载web接口对象
+    window[bridgeConfig.WEB_INTERFACE_KEY] = this; // 挂载web接口对象
   }
 
   /**
@@ -18,7 +18,10 @@ class BridgeInterfaceForWeb {
       channel.emit(options.name, options.data);
     }
     if (options.isDone) {
-      channel.emit(options.isReject ? REJECT_CALLBACK_KEY : RESOLVE_CALLBACK_KEY, options.data);
+      channel.emit(
+        options.isReject ? bridgeConfig.REJECT_CALLBACK_KEY : bridgeConfig.RESOLVE_CALLBACK_KEY,
+        options.data
+      );
       channelStore.delete(options.id);
     }
   }

@@ -4,7 +4,7 @@ import type {
   AndroidTriggerEventOptions
 } from "../../types/bridge/bridgeInterfaceForAndroid";
 import { channelStore } from "./channelStore";
-import { ANDROID_INTERFACE_KEY } from "./constant";
+import { bridgeConfig } from "./bridgeConfig";
 
 class BridgeInterfaceForAndroid {
   /**
@@ -12,7 +12,7 @@ class BridgeInterfaceForAndroid {
    * @return {AndroidInterface} 接口对象
    */
   private get androidInterface(): AndroidInterface | undefined {
-    return window[ANDROID_INTERFACE_KEY];
+    return window[bridgeConfig.ANDROID_INTERFACE_KEY];
   }
 
   /**

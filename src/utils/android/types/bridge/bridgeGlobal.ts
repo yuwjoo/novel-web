@@ -6,14 +6,10 @@ export interface BridgeGlobalSendEvent {
   ready: undefined;
 }
 
-export interface BridgeGlobalOn<T extends Record<string, any> = Record<string, any>> {
-  <K extends keyof T>(name: K, callback: BridgeGlobalOnCallback<T[K]>): void;
+export interface BridgeGlobalOn {
+  <K extends keyof BridgeGlobalOnEvent>(name: K, callback: (result: BridgeGlobalOnEvent[K]) => void): void;
 }
 
-export interface BridgeGlobalOnCallback<T = unknown> {
-  (result: T): void;
-}
-
-export interface BridgeGlobalSend<T extends Record<string, any> = Record<string, any>> {
-  <K extends Extract<keyof T, string>>(name: K, data?: T[K]): void;
+export interface BridgeGlobalSend {
+  <K extends keyof BridgeGlobalSendEvent>(name: K, data?: BridgeGlobalSendEvent[K]): void;
 }

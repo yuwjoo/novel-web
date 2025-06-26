@@ -7,17 +7,17 @@ export interface IChannel<TOn extends Record<PropertyKey, any> = any, TSend exte
 }
 
 export interface IChannelOn<T extends Record<PropertyKey, any> = any> {
-  <K extends keyof T>(name: K, callback: (result: T[K]) => void): void;
+  <K extends Extract<keyof T, string | symbol>>(name: K, callback: (result: T[K]) => void): void;
 }
 
 export interface IChannelEmit<T extends Record<PropertyKey, any> = any> {
-  <K extends keyof T>(name: K, data?: T[K]): void;
+  <K extends Extract<keyof T, string | symbol>>(name: K, data?: T[K]): void;
 }
 
-export interface IChannelSend<T extends Record<string, any> = any> {
-  <K extends Extract<keyof T, boolean>>(name: K, data?: T[K]): void;
+export interface IChannelSend<T extends Record<PropertyKey, any> = any> {
+  <K extends Extract<keyof T, string>>(name: K, data?: T[K]): void;
 }
 
-export interface IChannelDone<T extends Record<string, any> = any> {
+export interface IChannelDone<T extends Record<PropertyKey, any> = any> {
   <K extends Extract<keyof T, string>>(name?: K, data?: T[K]): void;
 }
