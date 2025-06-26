@@ -22,7 +22,7 @@ class BridgeInterfaceForWeb {
         options.isReject ? bridgeConfig.REJECT_CALLBACK_KEY : bridgeConfig.RESOLVE_CALLBACK_KEY,
         options.data
       );
-      channelStore.delete(options.id);
+      channel.close();
     }
   }
 

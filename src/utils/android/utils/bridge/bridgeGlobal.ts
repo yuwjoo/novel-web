@@ -8,7 +8,7 @@ class BridgeGlobal {
   private globalEventChannel: Channel; // 全局事件通道
 
   constructor() {
-    this.globalEventChannel = new Channel(bridgeConfig.GLOBAL_EVENT_CHANNEL_ID);
+    this.globalEventChannel = new Channel({ id: bridgeConfig.GLOBAL_EVENT_CHANNEL_ID });
     channelStore.add(this.globalEventChannel);
   }
 

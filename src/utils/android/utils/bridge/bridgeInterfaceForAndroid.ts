@@ -37,9 +37,6 @@ class BridgeInterfaceForAndroid {
    */
   public triggerEvent(options: AndroidTriggerEventOptions) {
     this.androidInterface?.triggerEvent(options);
-    if (options.isDone) {
-      channelStore.delete(options.id);
-    }
   }
 
   /**

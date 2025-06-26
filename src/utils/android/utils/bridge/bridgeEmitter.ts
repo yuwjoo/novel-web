@@ -29,7 +29,7 @@ export class BridgeEmitter {
     }
 
     const id = generateId();
-    const channel = new Channel(id);
+    const channel = new Channel({ id, onClose: () => channelStore.delete(id) });
 
     bridgeInterfaceForAndroid.callMethod({
       id,
@@ -50,11 +50,11 @@ export class BridgeEmitter {
    */
   public readonly connect: IBridgeEmitterConnect = (name, data) => {
     if (checkNotIsAndroidBridgeEnv()) {
-      return new Channel("empty", true);
+      return new Channel({ id: "empty", isClose: true });
     }
 
     const id = generateId();
-    const channel = new Channel(id);
+    const channel = new Channel({ id, onClose: () => channelStore.delete(id) });
 
     bridgeInterfaceForAndroid.callMethod({
       id,
