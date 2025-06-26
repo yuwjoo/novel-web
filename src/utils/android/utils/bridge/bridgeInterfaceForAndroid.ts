@@ -3,7 +3,6 @@ import type {
   AndroidCallMethodOptions,
   AndroidTriggerEventOptions
 } from "../../types/bridge/bridgeInterfaceForAndroid";
-import { channelStore } from "./channelStore";
 import { bridgeConfig } from "./bridgeConfig";
 
 class BridgeInterfaceForAndroid {
