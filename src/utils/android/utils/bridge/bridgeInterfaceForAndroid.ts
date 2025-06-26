@@ -3,6 +3,7 @@ import type {
   AndroidCallMethodOptions,
   AndroidTriggerEventOptions
 } from "../../types/bridge/bridgeInterfaceForAndroid";
+import { channelStore } from "./channelStore";
 import { ANDROID_INTERFACE_KEY } from "./constant";
 
 class BridgeInterfaceForAndroid {
@@ -36,6 +37,9 @@ class BridgeInterfaceForAndroid {
    */
   public triggerEvent(options: AndroidTriggerEventOptions) {
     this.androidInterface?.triggerEvent(options);
+    if (options.isDone) {
+      channelStore.delete(options.id);
+    }
   }
 
   /**

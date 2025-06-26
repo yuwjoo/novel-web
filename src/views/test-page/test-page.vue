@@ -105,6 +105,60 @@ apiHandler.done("cancel");
 bridgeGlobal.on("version", (result) => {
   console.log(result);
 });
+
+bridgeEmitter.invoke(B_API.net.request, {
+  url: "",
+  method: "",
+  headers: {},
+  timeout: 0
+});
+
+// type FlattenApiRouter<T, Prefix extends string = "", Separator extends string = "/"> = {
+//   [K in keyof T]: T[K] extends any[]
+//     ? { [P in `${Prefix}${K & string}`]: T[K] }
+//     : T[K] extends object
+//     ? FlattenApiRouter<T[K], `${Prefix}${K & string}${Separator}`>
+//     : never;
+// }[keyof T] extends infer R
+//   ? { [P in keyof R]: R[P] }
+//   : never;
+
+type ApiRouter = {
+  openDialog: [string, number];
+  net: {
+    request: {
+      aa: [number, any[]];
+    };
+    bb: [string];
+  };
+};
+
+// type Api = FlattenApiRouter<ApiRouter>;
+
+// function send<K extends keyof Api>(name: K, data: Api[K]) {
+//   console.log(data);
+// }
+
+// send("");
+
+// 使用映射类型合并联合类型
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+type FlattenPath<T, Separator extends string = "/", Prefix extends string = ""> = {
+  [K in keyof T]: T[K] extends any[]
+    ? { [P in `${Prefix}${K & string}`]: T[K] }
+    : T[K] extends object
+    ? FlattenPath<T[K], Separator, `${Prefix}${K & string}${Separator}`>
+    : never;
+}[keyof T];
+
+type Api = UnionToIntersection<FlattenPath<ApiRouter>>;
+
+function send<K extends keyof Api>(name: K, data: Api[K][0]) {
+  console.log(data);
+}
+
+send("net/request/aa");
 </script>
 
 <style lang="scss" scoped>
