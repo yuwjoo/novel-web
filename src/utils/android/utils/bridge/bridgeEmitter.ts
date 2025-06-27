@@ -31,16 +31,16 @@ export class BridgeEmitter {
     const id = generateId();
     const channel = new Channel({ id, onClose: () => channelStore.delete(id) });
 
+    channelStore.add(channel);
+
     bridgeInterfaceForAndroid.callMethod({
       id,
       callMethodPath: name.split("/"),
       data
     });
 
-    channelStore.add(channel);
-
     return new Promise((resolve, reject) => {
-      channel.on(bridgeConfig.RESOLVE_CALLBACK_KEY, resolve as any);
+      channel.on(bridgeConfig.RESOLVE_CALLBACK_KEY, resolve);
       channel.on(bridgeConfig.REJECT_CALLBACK_KEY, reject);
     });
   };
@@ -56,13 +56,13 @@ export class BridgeEmitter {
     const id = generateId();
     const channel = new Channel({ id, onClose: () => channelStore.delete(id) });
 
+    channelStore.add(channel);
+
     bridgeInterfaceForAndroid.callMethod({
       id,
       callMethodPath: name.split("/"),
       data
     });
-
-    channelStore.add(channel);
 
     return channel;
   };
