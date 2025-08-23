@@ -1,5 +1,5 @@
 export interface AndroidInterface {
-  callMethod: (data: AndroidCallMethodOptions) => void;
+  callMethod: (data: string) => void;
   triggerEvent: (options: AndroidTriggerEventOptions) => void;
   throwError: (message: string) => void;
   rebuild: () => void;

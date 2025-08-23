@@ -27,7 +27,7 @@ class BridgeInterfaceForAndroid {
    * @param {AndroidCallMethodOptions} data 发送数据
    */
   public callMethod(data: AndroidCallMethodOptions) {
-    this.androidInterface?.callMethod(data);
+    this.androidInterface?.callMethod(JSON.stringify(data));
   }
 
   /**

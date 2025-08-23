@@ -27,7 +27,8 @@ defineProps({
 });
 
 const handleScroll = (ev: Event) => {
-  console.log(ev);
+  ev;
+  // console.log(ev);
 };
 </script>
 
