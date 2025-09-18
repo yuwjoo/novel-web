@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CatalogPanel: typeof import('./../components/catalog-panel/catalog-panel.vue')['default']
+    ITablerSearch: typeof import('~icons/tabler/search')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     VanButton: typeof import('vant/es')['Button']

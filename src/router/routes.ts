@@ -2,7 +2,7 @@ export const routes = [
   {
     path: "/",
     component: () => import("@/layout/layout-main.vue"),
-    redirect: { name: "test-page" },
+    redirect: { name: "album" },
     children: [
       {
         path: "book-city",
@@ -48,7 +48,32 @@ export const routes = [
         meta: {
           title: "测试页面"
         }
+      },
+      {
+        path: "air-conditioner",
+        name: "air-conditioner",
+        component: () => import("@/views/air-conditioner/air-conditioner.vue"),
+        meta: {
+          title: "空调遥控器"
+        }
+      },
+      {
+        path: "album",
+        name: "album",
+        component: () => import("@/views/album/album.vue"),
+        meta: {
+          title: "相册",
+          keepAlive: true
+        }
       }
+      // {
+      //   path: "album-detail/:id",
+      //   name: "album-detail",
+      //   component: () => import("@/views/album/album-detail.vue"),
+      //   meta: {
+      //     title: "相册详情"
+      //   }
+      // }
     ]
   }
 ];
