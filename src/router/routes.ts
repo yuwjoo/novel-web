@@ -58,22 +58,22 @@ export const routes = [
         }
       },
       {
-        path: "album",
-        name: "album",
-        component: () => import("@/views/album/album.vue"),
+        path: "albumList",
+        name: "albumList",
+        component: () => import("@/views/album/albumList/albumList.vue"),
         meta: {
           title: "相册",
           keepAlive: true
         }
+      },
+      {
+        path: "albumDetail/:id",
+        name: "albumDetail",
+        component: () => import("@/views/album/albumDetail/albumDetail.vue"),
+        meta: {
+          title: "相册详情"
+        }
       }
-      // {
-      //   path: "album-detail/:id",
-      //   name: "album-detail",
-      //   component: () => import("@/views/album/album-detail.vue"),
-      //   meta: {
-      //     title: "相册详情"
-      //   }
-      // }
     ]
   }
 ];
